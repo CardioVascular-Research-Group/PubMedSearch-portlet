@@ -1,0 +1,72 @@
+<f:view
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+<h:form id="displaycurrrecord" >  
+
+
+
+	
+ 
+			<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt8"/>. <br/>
+	<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff8"/>. <br/>
+	<h:outputText value="#{pubMedSearch.selectedPub.journalname}"  id="selectedpubconfirmjn8"/>.<h:outputText value="&#160;" />
+	<h:outputText value="#{pubMedSearch.selectedPub.journalyear}"  id="selectedpubconfirmjy8"/><h:outputText value="&#160;" />
+	<h:outputText value="#{pubMedSearch.selectedPub.journalmonth}"  id="selectedpubconfirmjm8"/><h:outputText value="&#160;" />
+	<h:outputText value="#{pubMedSearch.selectedPub.journalday}"  id="selectedpubconfirmjd8"/>;<h:outputText value="&#160;" />
+   <h:outputText value="#{pubMedSearch.selectedPub.epubsum2}"  id="epubsum8"/><h:outputText value="&#160;" />
+	
+	<h:outputText value="#{pubMedSearch.selectedPub.doi}"  id="selectedpubdoi8"/><h:outputText value="&#160;" /><h:outputText value="&#160;" />
+	 <h:outputText value="#{pubMedSearch.selectedPub.epubsum}"  id="epubsum85"/><h:outputText value="&#160;" />
+ <br/>
+	<h:outputText style="font-weight: bold" value="Abstract:  "/> 
+	<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma85"/> <br/>  
+				
+	<br/>PMID: <h:outputText value="#{pubMedSearch.selectedPub.pmid}"  id="pmid185"/> 
+				
+		 <br/><br/>
+  
+	
+    <p:commandButton  id="downloadziponly" value="Click to Download All Files (.zip)" action="#{pubMedSearch.downloadZipOnly()}" ajax="false"/>
+    <br/>    
+
+      <p:dataTable id="ft85" var="sfiles" rowKey="#{sfiles.index}" value="#{pubMedSearch.allfiles}" type="ordered" selection="#{pubMedSearch.selecteddownloadfile}" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
+
+                 <p:column headerText="Filename" > 
+				 #{sfiles.filename}
+				  </p:column>  
+				   <p:column headerText="File Size">
+				 #{sfiles.filesize} KB
+				  
+				  </p:column>
+				  
+				  <p:column headerText="Figure and Panel">
+						
+						<h:outputText value="#{sfiles.figpandisplay}"/>
+					   
+					 
+				  </p:column>
+				  
+				  <p:column headerText="Description">
+				  #{sfiles.description}
+				  
+				  </p:column>
+				  
+ <p:column headerText="Download" >
+ <p:commandButton  id="downloadResults" value="Download this File" action="#{pubMedSearch.downloadRawFiles(sfiles)}" ajax="false"/>
+  
+ </p:column>
+ 
+ 
+ 
+ 
+</p:dataTable >
+<br/><br/><br/>
+<p:commandButton value="Start a New Search for Import" action="#{pubMedSearch.moveStep(8)}"/>
+
+</h:form>
+</f:view>

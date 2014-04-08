@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<f:view
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+	 <h:head />
+	<h:body>
+	
+	<h:panelGroup rendered="#{pubMedSearch.step == 1}">
+   <ui:include src="/views/step1.xhtml" />
+</h:panelGroup>
+
+<h:panelGroup rendered="#{pubMedSearch.step == 3}">
+   <ui:include src="/views/step3.xhtml" />
+</h:panelGroup>
+<h:panelGroup rendered="#{pubMedSearch.step == 4}">
+   <ui:include src="/views/step4.xhtml" />
+</h:panelGroup>
+	<h:panelGroup rendered="#{pubMedSearch.step == 5}">
+   <ui:include src="/views/step5.xhtml" />
+</h:panelGroup>
+<h:panelGroup rendered="#{pubMedSearch.step == 6}">
+   <ui:include src="/views/step6.xhtml" />
+</h:panelGroup>
+<h:panelGroup rendered="#{pubMedSearch.step == 7}">
+   <ui:include src="/views/step7.xhtml" />
+</h:panelGroup>
+<h:panelGroup rendered="#{pubMedSearch.step == 0}">
+   <ui:include src="/views/step0.xhtml" />
+</h:panelGroup>
+<h:panelGroup rendered="#{pubMedSearch.step == 99}">
+   <ui:include src="/views/step99.xhtml" />
+</h:panelGroup>
+
+		
+	
+	
+	
+	
+	
+	</h:body>
+	
+	</f:view>
