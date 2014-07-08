@@ -20,6 +20,7 @@ public class Publication implements Serializable{
         private List<String> fauthors;
 	    private List<String> lauthors;
 	    private List<String> fullnames;
+	    private List<FileStorer> fstorefiles; 
 	    private String title;
 	    private String theabstract;
 	    private String year;
@@ -53,6 +54,7 @@ public class Publication implements Serializable{
         	fullnames = new ArrayList<String>();
         	files = new ArrayList<File>();
         	filenames = new ArrayList<String>();
+        	fstorefiles = new ArrayList<FileStorer>();
         	title = "";
         	theabstract = "";
         	year = "";
@@ -91,6 +93,16 @@ public class Publication implements Serializable{
         	this.authorfull = afull;
         	
         	
+        }
+        
+        public List<FileStorer> getFstorefiles()
+        {
+        	return fstorefiles;
+        }
+        
+        public void setFstorefiles(List<FileStorer> f)
+        {
+        	fstorefiles = f;
         }
         
         public void setAuthorfull(String a)

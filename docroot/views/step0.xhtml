@@ -8,33 +8,29 @@
 >
 <h:form id="displaycurrrecord" >  
 
-
-
-	
  
-			<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt8"/>. <br/>
-	<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff8"/>. <br/>
-	<h:outputText value="#{pubMedSearch.selectedPub.journalname}"  id="selectedpubconfirmjn8"/>.<h:outputText value="&#160;" />
-	<h:outputText value="#{pubMedSearch.selectedPub.journalyear}"  id="selectedpubconfirmjy8"/><h:outputText value="&#160;" />
-	<h:outputText value="#{pubMedSearch.selectedPub.journalmonth}"  id="selectedpubconfirmjm8"/><h:outputText value="&#160;" />
-	<h:outputText value="#{pubMedSearch.selectedPub.journalday}"  id="selectedpubconfirmjd8"/>;<h:outputText value="&#160;" />
-   <h:outputText value="#{pubMedSearch.selectedPub.epubsum2}"  id="epubsum8"/><h:outputText value="&#160;" />
-	
-	<h:outputText value="#{pubMedSearch.selectedPub.doi}"  id="selectedpubdoi8"/><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-	 <h:outputText value="#{pubMedSearch.selectedPub.epubsum}"  id="epubsum85"/><h:outputText value="&#160;" />
- <br/>
+			<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt4"/> <br/>
+	<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff4"/>. <br/>
+	<h:outputText value="#{pubMedSearch.selectedPub.journalname}"  id="selectedpubconfirmjn4"/>.<h:outputText value="&#160;" />
+	<h:outputText value="#{pubMedSearch.selectedPub.journalyear}"  id="selectedpubconfirmjy4"/><h:outputText value="&#160;" />
+	<h:outputText value="#{pubMedSearch.selectedPub.journalmonth}"  id="selectedpubconfirmjm4"/><h:outputText value="&#160;" />
+	<h:outputText value="#{pubMedSearch.selectedPub.journalday}"  id="selectedpubconfirmjd4"/>;<h:outputText value="&#160;" />
+   <h:outputText value="#{pubMedSearch.selectedPub.epubsum2}"  id="epubsum15"/><h:outputText value="&#160;" />
+	<br/>
+	<h:outputText value="#{pubMedSearch.selectedPub.doi}"  id="selectedpubdoi"/><h:outputText value="&#160;" /><h:outputText value="&#160;" />
+	 <h:outputText value="#{pubMedSearch.selectedPub.epubsum}"  id="epubsum"/><h:outputText value="&#160;" />
+ <br/><br/>
 	<h:outputText style="font-weight: bold" value="Abstract:  "/> 
-	<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma85"/> <br/>  
+	<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma"/> <br/>  
 				
-	<br/>PMID: <h:outputText value="#{pubMedSearch.selectedPub.pmid}"  id="pmid185"/> 
+	<br/>PMID: <h:outputText value="#{pubMedSearch.selectedPub.pmid}"  id="pmid1"/> <br/>
 				
-		 <br/><br/>
-  
+		 <br/>
+   <p:commandButton  id="downloadziponly" value="Click to Download All Files (.zip)" action="#{pubMedSearch.downloadZipOnly()}" ajax="false"/>
+ 
+ <br/><br/>
 	
-    <p:commandButton  id="downloadziponly" value="Click to Download All Files (.zip)" action="#{pubMedSearch.downloadZipOnly()}" ajax="false"/>
-    <br/>    
-
-      <p:dataTable id="ft85" var="sfiles" rowKey="#{sfiles.index}" value="#{pubMedSearch.allfiles}" type="ordered" selection="#{pubMedSearch.selecteddownloadfile}" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
+        <p:dataTable id="ft" var="sfiles" rowKey="#{sfiles.index}" value="#{pubMedSearch.selectedPub.fstorefiles}" type="ordered" selection="#{pubMedSearch.selecteddownloadfile}" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
 
                  <p:column headerText="Filename" > 
 				 #{sfiles.filename}
@@ -65,8 +61,11 @@
  
  
 </p:dataTable >
-<br/><br/><br/>
-<p:commandButton value="Start a New Search for Import" action="#{pubMedSearch.moveStep(8)}"/>
+<br/>
+
+<p:commandButton value="Return to Start a New Entry" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
+
+
 
 </h:form>
 </f:view>

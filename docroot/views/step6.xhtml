@@ -11,9 +11,13 @@
 
 
 	
- <h:outputText value="Please enter descriptive information about each file uploaded." /> <br/>
-<h:outputText value="If the file does not correspond to a Figure or Panel, you must enter a description." /> 
+<h:outputText value="For each uploaded file:" /> <br/>
+<h:outputText value="-For files that were previously uploaded, you may edit the figure, panel, and description fields as needed." /> <br/>
+<h:outputText value="-If the data file you have uploaded corresponds to a single figure, please enter the figure number and panel label(s) in the corresonding fields below" /> <br/>
+<h:outputText value="-If the data file you have uploaded corresponds to more than one figure, please enter the figure number and panel label(s) of the first figure in the corresponding fields below, and enter the additonal figures and panel labels in the corresponding description field" /> <br/>
+<h:outputText value="-For files containing data that are referenced in the text or as &quot;data not shown &quot;, please use the description field to indicate the page number or section title corresponding to the in-text reference" /> <br/>  
 
+<h:outputText value="-Use the Save Progress button to save your progress. You can access this publication again under View My Publications." /> 
 	 <p:growl id="messages" showDetail="true"/>  
   
     <p:dataTable  var="mfiles" rowKey="#{mfiles.index}" value="#{pubMedSearch.allfiles}" id="editList" editable="true" editMode="cell" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >  
@@ -70,7 +74,7 @@
                 </f:facet> 
             </p:cellEditor>  
         </p:column>  
-        <p:column headerText="" style="width:35%">  
+        <p:column headerText="Results" style="width:35%">  
   
                     <h:outputText value="#{mfiles.message}" style="color: red"/>  
         </p:column> 
@@ -80,10 +84,13 @@
     </p:dataTable>  
   
  
-			
+	<p:growl id="messages2" life="10000" showDetail="true" sticky="true"/>		
 <br/>
-<p:commandButton value="Back" id="movebstep" validateClient="true" action="#{pubMedSearch.moveStep(5)}"/>
-<p:commandButton value="Next" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}"/>
+
+<p:commandButton value="Back" id="movebstep" validateClient="true" action="#{pubMedSearch.moveStep(5)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><h:outputText value="&#160;" />
+<p:commandButton value="Next" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/>
+  <p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint2}" update="messages2"/><h:outputText value="&#160;" />
+   <p:commandButton value="Save Progress and Start a New Entry" actionListener="#{pubMedSearch.handleFileSavePoint4}" update="messages"/> 
 
 
 </h:form>

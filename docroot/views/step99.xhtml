@@ -37,8 +37,8 @@
 
 
 
-<p:commandButton value="View the existing record" action="#{pubMedSearch.moveStep(0)}"/>
-<p:commandButton value="Start a New Search for Import" action="#{pubMedSearch.moveStep(8)}"/>
+<p:commandButton value="View the existing record" action="#{pubMedSearch.moveStep(0)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
+<p:commandButton value="Start a New Search for Import" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
 
 </h:form>
 				</h:panelGrid>

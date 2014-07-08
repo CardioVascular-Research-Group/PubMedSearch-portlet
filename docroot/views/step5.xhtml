@@ -10,8 +10,10 @@
 
 	
 				 <h:form enctype="multipart/form-data">
+			
 	
 	<h:outputText value="Please upload all files you would like to associate with the publication selected."/>
+	<h:outputText value="Use the Save Progress button to save your uploads without moving forward. You can access this publication again under View My Publications." /> 
 	<br/><br/>
 			   					
 	<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt3"/>. <br/>
@@ -32,11 +34,16 @@
 	
 				<br/><h:outputText style="font-weight: bold" value="Please select electrophysiology files from your computer to attach to this record."/>
    			<br/><h:outputText value="#{pubMedSearch.redostep5msg}" style="color:red"/>  <br/>
-   			 <p:fileUpload fileUploadListener="#{pubMedSearch.fchooser.handleFileUpload}" mode="advanced" style="width:100%" dragDropSupport="true" update="messages" multiple="true" fileLimit="5" sizeLimit="2000000" allowTypes="/(\.|\/)(abf)$/" />  
+   			
+   			<h:outputText value="#{pubMedSearch.uploaderr}" style="color:red"/>
+   			 <p:fileUpload fileUploadListener="#{pubMedSearch.fchooser.handleFileUpload}" mode="advanced" style="width:100%" dragDropSupport="true" update="messages" multiple="true" fileLimit="5" sizeLimit="2000000" allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar)$/" />  
   <br/><br/><br/>
    			 <p:growl id="messages" life="10000" showDetail="true" sticky="true"/>  
-  <p:commandButton value="Back" action="#{pubMedSearch.moveStep(4)}"/> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-  <p:commandButton value="Next" action="#{pubMedSearch.moveStep(5)}" update="@form"/>
+  
+  <p:commandButton value="Back" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true; checkSubmit();', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" /> <h:outputText value="&#160;" />
+  <p:commandButton value="Next" action="#{pubMedSearch.moveStep(5)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/>
+    <p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint1}" update="messages"/> <h:outputText value="&#160;" />
+    <p:commandButton value="Save Progress and Start a New Entry" actionListener="#{pubMedSearch.handleFileSavePoint3}" update="messages"/> 
   
 					
 				

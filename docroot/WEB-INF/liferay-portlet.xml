@@ -11,6 +11,7 @@
 		<header-portlet-javascript>/css/myjs.js</header-portlet-javascript>
 		<css-class-wrapper>PubMedSearch-portlet</css-class-wrapper>
 	</portlet>
+
 	<role-mapper>
 		<role-name>administrator</role-name>
 		<role-link>Administrator</role-link>

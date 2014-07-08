@@ -36,8 +36,8 @@
 
 <br/><br/>
 
- <p:commandButton value="Back" action="#{pubMedSearch.moveStep(3)}"/> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-<p:commandButton value="Next" action="#{pubMedSearch.moveStep(4)}"/>
+ <p:commandButton value="Back" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" /> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
+<p:commandButton value="Next" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
 
 </h:form>
 				</h:panelGrid>

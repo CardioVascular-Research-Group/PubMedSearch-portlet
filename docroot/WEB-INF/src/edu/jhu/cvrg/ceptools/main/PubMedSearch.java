@@ -37,6 +37,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -56,27 +57,41 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
+import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.CoreAdminResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.SolrRequest.*;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.SolrCore;
+import org.apache.solr.servlet.cache.Method;
+import org.apache.solr.util.PropertiesUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.RowEditEvent;
+
+import com.liferay.faces.bridge.event.RenderRequestPhaseListener;
 import com.liferay.faces.portal.context.LiferayFacesContext;
+import com.liferay.faces.portal.context.PortletHelper;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.model.User;
+import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
+
 import edu.jhu.cvrg.ceptools.controller.FileDownloadController;
 import edu.jhu.cvrg.ceptools.controller.FileUploadController;
-
 import edu.jhu.cvrg.ceptools.model.FileStorer;
 import edu.jhu.cvrg.ceptools.model.Publication;
 import edu.jhu.cvrg.ceptools.utility.ZipDirectory;
@@ -99,16 +114,20 @@ public class PubMedSearch implements Serializable{
 	    
 	    private String searcher;
 	    private String url;
+	    private String savemsg;
 	    private String base;
+	    private String redostep1;
 	    private boolean redostep3;
 	    private boolean redostep5;
 	    private boolean redostep6;
 	    private String redostep3msg;
 	    private String redostep5msg;
 	    private String redostep6msg;
+	    private boolean finalsave;
 	    
 	    
 	    public int counter;
+	    private int solrindex;
 	    private int recurpmid;
 	    private String buttonvalue;
 	    
@@ -125,6 +144,8 @@ public class PubMedSearch implements Serializable{
 	    private String selecteddownloadfiletype;
 	    private String selecteddownloadfilename;
 	    private String pfigure, ppanel, pdescription;
+	    private String uploaderr;
+	    private HttpSolrServer server = new HttpSolrServer("http://localhost:8983/solr");
 	    
 	    private boolean confirmed;
 	    
@@ -143,9 +164,36 @@ public class PubMedSearch implements Serializable{
 	    private List<Integer> pmidlist;
 	    
 	    
+	    public String getSavemsg()
+	    {
+	    	return savemsg;
+	    }
+	    
+	    public void setSavemsg(String s)
+	    {
+	    	savemsg = s;
+	    }
+	    
+	    public String getUploaderr()
+	    {
+	    	return uploaderr;
+	    }
+	    
+	    public void setUploaderr(String u)
+	    {
+	    	uploaderr = u;
+	    }
 	    
 	    
+	    public void setRedostep1(String m)
+	    {
+	    	redostep1 = m;
+	    }
 	    
+	    public String getRedostep1()
+	    {
+	    	return redostep1;
+	    }
 	    
 	    public void setRedostep3msg(String m)
 	    {
@@ -418,6 +466,7 @@ public class PubMedSearch implements Serializable{
 	    	 allfiles = new ArrayList<FileStorer>();
 	    	 selectedfile = null;
 	    	 zip = new ZipDirectory();
+	    	 finalsave = false;
 	    	 fdownload = new FileDownloadController();
 	    	 selecteddownloadfile = null;
 	    	 index = 0;
@@ -431,9 +480,57 @@ public class PubMedSearch implements Serializable{
 	    	 confirmed = false;
 	    	 redostep3 = redostep5 = redostep6= false;
 	    	 redostep3msg =  redostep5msg =  redostep6msg = "";
+	    	 uploaderr = savemsg =  "";
 	    	 
 	    }
 	   
+	   public void checkUpload()
+	   {
+		   
+		   if(fchooser.getAllFiles().isEmpty())
+		   {
+			   
+		   }
+		   else
+		   {
+			   moveStep(4);
+		   }
+		   
+		   
+	   }
+	   
+	   public void configDisplay2 ()
+	   {
+		 
+		   String tmpdis = "";
+		   
+		   if(!selectedPub.getFstorefiles().isEmpty())
+		   {
+		   
+		   for(FileStorer currfile: selectedPub.getFstorefiles())
+		   {
+			  
+			   if(currfile.getFigure().length() > 0 && currfile.getPanel().length()>0)
+			   {
+				   tmpdis = "Figure " + currfile.getFigure() + ", Panel " + currfile.getPanel();
+				   currfile.setFigpandisplay(tmpdis); 
+			   }
+			   else if (currfile.getFigure().length() > 0 && currfile.getPanel().length()<1)
+			   {
+				   tmpdis = "Figure " + currfile.getFigure(); 
+				   currfile.setFigpandisplay(tmpdis);  
+			   }
+			   else 
+			   {
+				   currfile.setFigpandisplay("");  
+			   }
+			   
+			   
+		   }
+		   
+		   
+		   } 
+	   }
 	   
 	   public void configDisplay ()
 	   {
@@ -472,6 +569,7 @@ public void Clean()
  	 counter = 0;
  	 searcher = "title";
  	 buttonvalue = "";
+ 	 pmidlist = new ArrayList<Integer>();
  	 userauthor = usertitle = userpmid = url = searcher = pSearcher = "";
  	 base = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
  	 publications = new ArrayList<Publication>();
@@ -491,12 +589,13 @@ public void Clean()
  	 jv=jn=ji=jd=jm=jy=jsp=doi=epday=epmonth=epyear =epubsum = epubsum2 = "";
  	 selecteddownloadfiletype = selecteddownloadfilename = "";
   	searchchoice = "searchtitle";  
-
+  	finalsave = false;
  	 ppanel = pfigure = pdescription = "";
 	confirmed = false;
 	
 	 redostep3 = redostep5 = redostep6= false;
 	 redostep3msg =  redostep5msg =  redostep6msg = "";
+	 uploaderr = "";
 }
 
 
@@ -506,6 +605,7 @@ public void Clean2()
  	 counter = 0;
  	 searcher = "title";
  	 buttonvalue = "";
+ 	 pmidlist = new ArrayList<Integer>();
  	 userauthor = userpmid = url = searcher = pSearcher = "";
  	 base = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
  	 publications = new ArrayList<Publication>();
@@ -525,149 +625,132 @@ public void Clean2()
  	 jv=jn=ji=jd=jm=jy=jsp=doi=epday=epmonth=epyear =epubsum = epubsum2 = "";
  	 selecteddownloadfiletype = selecteddownloadfilename = "";
   	searchchoice = "searchtitle";  
-
+  	finalsave = false;
  	 ppanel = pfigure = pdescription = "";
 	 confirmed = false;
 	
 	 redostep3 = redostep5 = redostep6= false;
 	 redostep3msg =  redostep5msg =  redostep6msg = "";
+	 uploaderr = "";
 }
 	   
-	   
-	   public void moveStep(int nextstep)
+public void moveStep(int nextstep)
+{
+   int previousstep = step;
+   savemsg = "";
+ 
+   
+   if (redostep3 == true && nextstep == 3 && previousstep !=4 && !usertitle.isEmpty())
+	{
+		if(selectedPub != null)
 		{
-		   int previousstep = step;
-		   
-		   if (redostep3 == true && nextstep == 3 && previousstep !=4)
-			{
-				if(selectedPub != null)
+ 
+			 if(selectedPub.getExists())
 				{
-					
-				step = 4;
-				try{
-					LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
-					portletFacesContext.getExternalContext().redirect("shallon_upload");
-					return;
+					step=99;
 				}
-				catch (Exception ex)
-				{
-					logger.info(ex);
-				}
-				
-				}
-				else
-				{
-					step = 3;
-					redostep3msg = "Please select a single citation from the list to proceed.";
-				}
-			}
-		   if (redostep5 == true && nextstep == 5 && redostep6 == false)
-			{
-				if(!fchooser.getAllFiles().isEmpty())
-				{
-					
-					if(nextstep == 6)
-					{
+			 else{
+			
+		step = 4;
+			 }
+		try{
+			LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
+			portletFacesContext.getExternalContext().redirect("upload");
+			return;
+		}
+		catch (Exception ex)
+		{
+			logger.info(ex);
+		}
+		
+		}
+		else
+		{
+			step = 3;
+			redostep3msg = "Please select a single citation from the list to proceed.";
+		}
+	}
+   if (redostep5 == true && nextstep == 5 && redostep6 == true)
+	{
+		if(!fchooser.getAllFiles().isEmpty())
+		{
+		
 				step = 6;
-					}
-					else if (nextstep == 5)
-					{
-						step = 5;
-					}
+				CleanFileStorage();
 				getStoredFiles();
-				redostep6 = true;
-				try{
-					LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
-					portletFacesContext.getExternalContext().redirect("shallon_upload");
-					return;
-				}
-				catch (Exception ex)
-				{
-					logger.info(ex);
-				}
-				
-				}
-				else
-				{
-					step = 5;
-					redostep5msg = "Please upload at least one file to the publication to proceed.";
-					try{
-						LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
-						portletFacesContext.getExternalContext().redirect("shallon_upload");
-						return;
-					}
-					catch (Exception ex)
-					{
-						logger.info(ex);
-					}
-				}
+				 deleteZipFromRecord();
+				  // configDisplay2 (); 
+		
+
+		try{
+			LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
+			portletFacesContext.getExternalContext().redirect("upload");
+			return;
+		}
+		catch (Exception ex)
+		{
+			logger.info(ex);
+		}
+		
+		}
+		else
+		{
+			step = 5;
+			redostep5msg = "Please upload at least one file to the publication to proceed.";
+			try{
+				LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
+				portletFacesContext.getExternalContext().redirect("upload");
+				return;
 			}
-		
+			catch (Exception ex)
+			{
+				logger.info(ex);
+			}
+		}
+	}
 
-		   
-		
-		   if(nextstep < step)
-		   {
-			   
-			   
-			   if(nextstep == 1)
-			   {
-				 
-				   Clean();
-					step=1;
-				   
-			   }
-			   
-			   
-			   if(nextstep == 3)
-			   {
-				   
-				   step = 3;
-				   
-			   }
-			   
-			   if(nextstep == 4)
-			   {
-				   
-				   step = 4;
-			   }
-			   
-			   if(nextstep == 5)
-			   {
-				 step = 5;  
-				   
-			   }
-			   
-			   
-			   
-			 
-			   
-			   
-			   
-			   
-			   
-		   }
-		   else
-		   {
-		   
-		   
-		   
 
+   
+
+   if(nextstep < step && step!=99)
+   {
+	   if(nextstep == 0)
+	   {
+		   step = 0;
+		   CleanFileStorage();
+		   getStoredFiles();
+		   deleteZipFromRecord();
+		 //  configDisplay2 (); 
+		 
+	   }
+	   
+	   if(nextstep == 1)
+	   {
+		 
+		   Clean();
+			step=1;
 		   
-		   step = nextstep;
+	   }
+	   
+	   
+	   if(nextstep == 3)
+	   {
 		   
-		
-	
-		
-				if (step == 3)
+		 
+		   if(usertitle.isEmpty())
+			{
+				step =1;
+				redostep1 = "Please enter a valid search.";
+			}
+			
+			
+			else if(redostep3 == false)
 				{
-					
-					if(redostep3 == false)
-					{
 						 if (searchchoice == "searchauthor" || searchchoice=="searchtitle" || searchchoice=="searchpmid")
 						{
 							
 							  try{
+								  step = 3;
 						    	   processUrl(); 
 						    	   syncResults();
 						    	   }
@@ -676,85 +759,167 @@ public void Clean2()
 						    		   
 						    	   }
 						}
-					}
-					redostep3 = true;
-					
 				}
 				
-				
-				else if(step == 4)
-				{
-					step = 5;
-					setFchooservar();
-				}
-				else if (step==5)
+				 redostep3 = true;
+		   
+	   }
+	   
+	   if(nextstep == 4)
+	   {
+		   
+		   step = 4;
+	   }
+	   
+	   if(nextstep == 5)
+	   {
+		   step = 5;  
+		   
+	   }
+	   
+	   
+
+	   
+	   
+   }
+   else
+   {
+   
+   
+   step = nextstep;
+   
+	
+		if (step == 3)
+		{
+		 	if(usertitle.isEmpty())
 			{
+				step =1;
+				redostep1 = "Please enter a valid search.";
+			}
+			
+			
+			else if(redostep3 == false)
+				{
+						 if (searchchoice == "searchauthor" || searchchoice=="searchtitle" || searchchoice=="searchpmid")
+						{
+							
+							  try{
+								  
+						    	   processUrl(); 
+						    	   syncResults();
+						    	   }
+						    	   catch(Exception ex)
+						    	   {
+						    		   
+						    	   }
+						}
+						 redostep3 = true;
+				}
 				
+
+		}
+		
+		
+		else if(step == 4)
+		{
+			redostep1 = "";
+			if(selectedPub != null)
+			{
+					
+			step = 5;
+			uploaderr = "";
+			setFchooservar();
+			redostep5 = true;	
+				
+			}
+			else
+			{
+				uploaderr = "Please select a citation below to proceed.";
+				step = 3;
+			}
+			
+			
+			
+		}
+		else if (step==5)
+	{
+			if(!fchooser.getAllFiles().isEmpty())
+			{
+				uploaderr = "";
 		    	redostep5 = true;
+		    	draftPointSave1();
+		    	CleanFileStorage();
 		    	getStoredFiles();
+		    	 deleteZipFromRecord();
+				// configDisplay2 (); 
 		    	step = 6;
 			}
-				else if(step==6)
+			else
 			{
-				
-					
-			                validateDesc();
-						
-							if(confirmed==true)
-							{
-								step = 7;
-								configDisplay();
-								sendtoSolr();
-							}
-							else
-							{
-								step = 6;
-							}
-					
-					redostep6 = true;
+				uploaderr = "You must upload at least 1 file to proceed.";
+				step = 5;
 			}
-				else if(step==7)
-			{
-				 configDisplay ();
-				 sendtoSolr();
-			}
-				else if(step==8)
-			{
-				Clean();
-				step=1;
-			}
-			
-				else if(step==0)
-			{ 
-			   getStoredFiles();
-			   configDisplay ();
+	}
+		else if(step==6)
+	{
 		
-			}
-				else if(step==4)
-			{   
 			
+	                validateDesc();
 				
-				if(selectedPub.getExists())
-				{
-					step=99;
-				}
-			}
+					if(confirmed==true)
+					{
+						step = 7;
+						
+						configDisplay();
+						draftPointSave3();
+					}
+					else
+					{
+						step = 6;
+						draftPointSave2();
+					}
 			
-		   }
-		  
-
-			
-			try{
-				LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
-				portletFacesContext.getExternalContext().redirect("shallon_upload");
-				return;
-			}
-			catch (Exception ex)
-			{
-				logger.info(ex);
-			}
-		}
+			redostep6 = true;
+	}
+		else if(step==7)
+	{
+		 configDisplay ();
+		 draftPointSave3();
+	}
+		else if(step==8)
+	{
 	   
+	    if(finalsave == false)
+	    {
+	    savemsg = "Your data has been saved. You may return to your entry under View Publications.";
+	    }
+		Clean();
+		step=1;
+	}
+	
+	
+	
+	
+   }
+	
+	try{
+		LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
+		portletFacesContext.getExternalContext().redirect("upload");
+		return;
+	}
+	catch (Exception ex)
+	{
+		logger.info(ex);
+	}
+}
+
+	   
+public void checkForDuplicates()
+{
+	
+	
+}
+
 	   public void onEdit(RowEditEvent event) {  
 	        FacesMessage msg = new FacesMessage("File Edited", ((FileStorer) event.getObject()).getFilename());  
 	  
@@ -889,7 +1054,8 @@ public void Clean2()
 				 
 				 
 				 
-				 response = solr.query(theq);
+				
+				 response = solr.query(theq, org.apache.solr.client.solrj.SolrRequest.METHOD.POST);
 				 
 				 
 				 SolrDocumentList list = response.getResults();
@@ -939,10 +1105,13 @@ public void Clean2()
 	   
 	   }  
 	   
+	   
 	   public void SearchSolrList(List<Integer> mypmids)
 		 {
 		   
 		   String querylist = "pmid:(";
+		   List<Publication> results2 = new ArrayList<Publication> ();
+		   
 		   
 		  for(Integer currint: mypmids)
 		  {
@@ -978,14 +1147,19 @@ public void Clean2()
 				 
 			
 				 SolrQuery theq = new SolrQuery();
+				 
+			
 				 theq.setQuery(querylist);
+			
 				 
 			
 				 QueryResponse response = new QueryResponse();
+				
 				 
 				 
 				
-				 response = solr.query(theq);
+				// response = solr.query(theq);
+				 response = solr.query(theq, org.apache.solr.client.solrj.SolrRequest.METHOD.POST);
 				 
 				
 				 SolrDocumentList list = response.getResults();
@@ -998,17 +1172,32 @@ public void Clean2()
 				 for(SolrDocument doc: list)
 				 {
 					Publication currlist = new Publication();
+					solrindex = 0;
 					currlist.setTitle(doc.getFieldValue("ptitle").toString());
 					currlist.setAbstract(doc.getFieldValue("abstract").toString());
 					currlist.setPmid(Integer.valueOf(doc.getFieldValue("pmid").toString()));
 					
-					results.add(currlist);
+					if(doc.getFieldValues("pfileinfo") != null)
+					{
+					
+						Collection<Object> currcoll = doc.getFieldValues("pfileinfo");
+						
+						for(Object currobj: currcoll)
+						{
+							currlist = convertStore(String.valueOf(currobj), currlist);
+						}
+						
+						
+					}
+					
+					results2.add(currlist);
 					docnum++;
 				 }
 				 
 				 int currcounter = 0;
+				 List<FileStorer> solrpubfiles = new ArrayList<FileStorer> ();
 				 
-				 for(Publication solrmatch: results)
+				 for(Publication solrmatch: results2)
 				 {
 					 currcounter = 0;
 					 for(Publication publistrecord: publications)
@@ -1017,7 +1206,9 @@ public void Clean2()
 						 {
 							
 							 publications.get(currcounter).setExists(true);
+							 publications.get(currcounter).setFstorefiles(solrmatch.getFstorefiles());
 							 
+
 						 }
 						 currcounter++;
 					 }
@@ -1037,7 +1228,71 @@ public void Clean2()
 				
 			 }
 		 }   
-	   
+	   public Publication convertStore(String fileinfo, Publication currlist)
+		{
+			int fname, fsize, ffigure, fpanel, fdescription = -1;
+			String sname , ssize, sfigure, spanel, sdescription;
+			sname = ssize= sfigure= spanel= sdescription = "";
+			
+			
+			fsize = fileinfo.indexOf("filesize:");
+			fdescription = fileinfo.indexOf(",filedescription:");
+			ffigure = fileinfo.indexOf(",filefigure:");
+			fpanel = fileinfo.indexOf(",filepanel:");
+			fname = fileinfo.indexOf(",filename:");
+			
+			if(fsize != -1 && fdescription != -1)
+			{
+				ssize = (String) fileinfo.subSequence(fsize, fdescription);
+			}
+			if(ffigure!= -1 && fdescription != -1)
+			{
+				sdescription = (String) fileinfo.subSequence(fdescription, ffigure);
+			}
+			if(ffigure!= -1 && fpanel != -1)
+			{
+				sfigure = (String) fileinfo.subSequence(ffigure, fpanel);
+			}
+			if(fname != -1 && fpanel != -1)
+			{
+				spanel = (String) fileinfo.subSequence(fpanel, fname);
+			}
+			if(fname != -1)
+			{
+				sname = (String) fileinfo.subSequence(fname,fileinfo.length());
+			}
+			
+			ssize = ssize.replace("filesize:","" );
+			sname = sname.replace(",filename:", "");
+			sdescription = sdescription.replace(",filedescription:", "");
+			sfigure = sfigure.replace(",filefigure:", "");
+			spanel = spanel.replace(",filepanel:", "");
+			
+			
+			
+			String fileloc = PropsUtil.get("data_store2") + currlist.getPmid() + "/";
+			FileStorer currfile = new FileStorer();
+			currfile.setDescription(sdescription);
+			currfile.setFigure(sfigure);
+			currfile.setFilesize(Long.valueOf(ssize));
+			currfile.setFilename(sname);
+			currfile.setPanel(spanel);
+			currfile.setIndex(solrindex);
+			currfile.setFilelocation(fileloc);
+			currfile.setLocalfilestore(fileloc);
+			
+		
+			//currlist.addFile(currfile);
+		
+		
+			currlist.getFstorefiles().add(currfile);
+			
+			
+			solrindex++;
+			
+			return currlist;
+			
+		}
 	   
 	   
 	
@@ -1066,152 +1321,8 @@ public void Clean2()
 	    }
 	   
 	   
-	   
-	   
-	   public void UpdateSolr () throws Exception
-	   {
-		   String str = PropsUtil.get("data_store");
-		   File maindir = new File(str);
-		   File[] mdcontents = maindir.listFiles();
-		   List<Integer> allpubs = new ArrayList<Integer> ();
-		   SAXReader reader = new SAXReader();
-	    	SAXReader reader2 = new SAXReader();
-		     Document document;
-	        
-	         OutputFormat format = OutputFormat.createPrettyPrint();
-	      
-	         XMLWriter writer = new XMLWriter( System.out, format );
-	         
-	         String mytitle, myabstract, myyear, myfullname = "";
-	         Element journalname, journalvolume, journalissue, journalyear, journalmonth, journalday, journalpagestart, epubmonth, epubday, epubyear;
-	         int mypmid;
-	         List<String> mylauthors = new ArrayList<String>();
-	         List<String> myfauthors = new ArrayList<String>();
-	         List<String> myfnames = new ArrayList<String>();
-	        
-		   
-		   for(File currfile: mdcontents)
-		   {
-			  if(currfile.isDirectory())
-			  {
-				  String currname = currfile.getName();
-				  int currpmid = Integer.valueOf(currname);
-				  allpubs.add(currpmid);
-			  }
-			   
-			   
-		   }
-		
-		   
-		   for(int currint: allpubs)
-		   {
-		   String input = String.valueOf(currint);
-		 
-	    
-	        
-	    
-		   String url = base + "efetch.fcgi?db=pubmed&id="+input+"&retmode=xml&rettype=abstract";
-		
-		   document = reader.read(url);
-    	   
-           List firstnames = document.selectNodes( "//ForeName" );
-           List lastnames = document.selectNodes( "//LastName" );
-
-          mytitle = document.selectSingleNode("//ArticleTitle").getText();
-          myyear =  document.selectSingleNode("//PubDate/Year").getText();
-          myabstract = document.selectSingleNode("//AbstractText").getText();
-          journalname =(Element) document.selectSingleNode(".//Journal/Title");
-            journalyear =(Element) document.selectSingleNode(".//PubDate/Year"); 
-            journalmonth =(Element) document.selectSingleNode(".//PubDate/Month"); 
-            journalday =(Element) document.selectSingleNode(".//PubMedPubDate[@PubStatus='epublish']/Day | .//DateCreated/Day");
-            
-            epubday = (Element) document.selectSingleNode(".//PubMedPubDate[@PubStatus='aheadofprint']/Day"); 
-            epubmonth = (Element) document.selectSingleNode(".//PubMedPubDate[@PubStatus='aheadofprint']/Month");
-            epubyear =(Element) document.selectSingleNode(".//PubMedPubDate[@PubStatus='aheadofprint']/Year");
-            
-            
-            journalvolume =(Element) document.selectSingleNode(".//Journal/Volume"); 
-            journalissue =(Element) document.selectSingleNode(".//Journal/Issue"); 
-            journalpagestart =(Element) document.selectSingleNode(".//MedlinePgn");
-          mypmid = Integer.valueOf(document.selectSingleNode(".//PMID").getText());
-          
-          
-            jn = journalname.getText();
-            jv = journalvolume.getText();
-            ji = journalissue.getText();
-            jm = journalmonth.getText();
-            jy = journalyear.getText();
-            jsp =journalpagestart.getText();
-            jd = journalday.getText();
-            epday = epubday.getText();
-            epmonth = epubmonth.getText();
-            epyear = epubyear.getText();
-            
-          
-          mypmid = currint;
-
-            Iterator fiter=firstnames.iterator();
-            Iterator liter=lastnames.iterator();
-
-            //System.out.println("The Authors: ");
-            
-             while(fiter.hasNext()){
-             Element currelement= (Element) fiter.next();
-             myfauthors.add(currelement.getText());
-             Element currelement2 = (Element) liter.next();
-            mylauthors.add(currelement2.getText());
-            
-            myfullname = currelement.getText() + " " + currelement2.getText();
-            myfnames.add(myfullname);
-            
-            	if(fiter.hasNext())
-            		{
-            		
-            		authorfull = authorfull + myfullname + ", ";
-            		}
-             }
-           
-
-		   
-		   
-		   try{
-		   SolrInputDocument metadoc = new SolrInputDocument();
-	    	 
-	    	 metadoc.addField("pmid", currint);
-	    	 metadoc.addField("pid", UUID.randomUUID());
-	    	 metadoc.addField("journalvolume", jv);
-	    	 metadoc.addField("journalissue", ji);
-	    	 metadoc.addField("journalmonth", jm);
-	    	 metadoc.addField("journalyear", jy);
-	    	 metadoc.addField("journalday", jd);
-	    	 metadoc.addField("journalname", jn);
-	    	 metadoc.addField("journalpage", jsp);
-	    	 metadoc.addField("author_fullname_list", authorfull);
-	    	 
-	    	    metadoc.addField("abstract", myabstract);
-	    	   metadoc.addField("publicationdate_year", myyear);
-	    	  
-	    	   metadoc.addField("ptitle", mytitle );  
-	    	   
-	    	  for(int i=0; i<myfauthors.size(); i++) 
-	    	  {
-	    	   metadoc.addField("author_firstname",myfauthors.get(i));
-	    	    metadoc.addField("author_lastname",mylauthors.get(i)); 
-	    	  }
-	    	    
-	    	  HttpSolrServer server = new HttpSolrServer("http://localhost:8983/solr");
-	    	 server.add(metadoc);
-	    	    server.commit();
-	    	}
-	    	catch(Exception ex)
-	    	{
-	    		logger.info(ex);
-	    	}
-		   }
-	   }
-	    
 	  	      
-	   public boolean checkSubmit()
+public boolean checkSubmit()
 	   {
 		   if((this.getUserauthor().length() > 0)|| (this.getUsertitle().length() > 0 )|| (this.getUserpmid().length() > 0))
 		   {
@@ -1223,106 +1334,7 @@ public void Clean2()
 		   }
 	   }
 	      
-	    public String onFlowProcess(FlowEvent event) {  
-	       
-	        
-	        
-	       if(event.getOldStep().equalsIgnoreCase("searchselect") )
-	       {
-			     
-	    	   
-	    	   if(searcher.equalsIgnoreCase("author"))
-			      {  
-			    	  
-			    	return "searchauthor";  
-			    	
-			    	
-			      }
-			      else if(searcher.equalsIgnoreCase("title"))
-			      {
-			    	  return "searchtitle";  
-			      }
-			      else if(searcher.equalsIgnoreCase("pmid"))
-			      {
-			    	  return "searchpmid";  
-			      }
-			      else
-			      {
-			    	  return "searchpmid";
-			      }
-	       }
-	       if((event.getOldStep().equalsIgnoreCase("searchauthor") ||event.getOldStep().equalsIgnoreCase("searchtitle") || event.getOldStep().equalsIgnoreCase("searchpmid"))
-	    		    && ! checkSubmit()){
-	    	   Clean();
-	    	   return "searchselect";
-	       }
-	      
-	       if(event.getOldStep().equalsIgnoreCase("searchauthor") && checkSubmit())
-	       {
-	    	   try{
-	    	   processUrl(); 
-	    	   }
-	    	   catch(Exception ex)
-	    	   {
-	    		   logger.info(ex);
-	    	   }
-	    	   return "resultsdisplay";
-	       }
-	       if(event.getOldStep().equalsIgnoreCase("searchtitle") && checkSubmit())
-	       {
-	    	
-	   
-	    	  
-	    
-	    	   try{
-		    	   processUrl(); 
-		    	   }
-		    	   catch(Exception ex)
-		    	   {
-		    		   
-		    	   }
-	    	   return "resultsdisplay";
-	       }
-	       if(event.getOldStep().equalsIgnoreCase("searchpmid") && checkSubmit())
-	       {
-	    	   try{
-		    	   processUrl(); 
-		    	   }
-		    	   catch(Exception ex)
-		    	   {
-		    		   
-		    	   }
-	    	   return "resultsdisplay";
-	       }
-	       if(event.getOldStep().equalsIgnoreCase("resultsdisplay"))
-	       {
-	    	   testPub();
-	    	
-	    	   return "confirm";
-	       }
-	       if(event.getOldStep().equalsIgnoreCase("confirm"))
-	       {
-	    	   setFchooservar();
-	    	   sendtoSolr();
-	    	   
-	    	   return "upload";
-	       }
-	       if(event.getOldStep().equalsIgnoreCase("upload"))
-	       {
-	    	   
-	    	   getStoredFiles();
-	    	   return "display";
-	       }
-	       else
-	       {
-	    	   Clean();
-	    	   return "searchselect";
-	       }
-	      
-	    	    
-	    
-	    
-}
+	 
 	    
 public List<File> getFiles()
 {
@@ -1360,6 +1372,14 @@ public void setFiles(List<File> files)
 	    }
 	    
 	    
+	    public void CleanFileStorage()
+	    {
+	    	allfiles = new ArrayList<FileStorer> ();
+	    	files = new ArrayList<File> ();
+	    	filenames = new ArrayList<String> ();
+	    	selectedPub.setFiles(files);
+	    	selectedPub.setFilenames(filenames);
+	    }
 	    
 	    
 
@@ -1368,7 +1388,75 @@ public void setFiles(List<File> files)
 	    	
 	    	
 	    	
-	    	String currlocation = PropsUtil.get("data_store") + this.selectedPub.getPmid() + "/";
+	    	String currlocation = PropsUtil.get("data_store2") + this.selectedPub.getPmid() + "/";
+	    	String zipfilelocation = currlocation+ this.selectedPub.getPmid()+".zip";
+	    	File foldertozip = new File(currlocation);
+	    	 
+
+	    	File folder = new File(currlocation);
+
+	    	for(File currfile: folder.listFiles())
+	    	{
+	    		
+               String absolutePath = currfile.getAbsolutePath();
+	    		FileStorer currfilestore = new FileStorer();
+	    		currfilestore.setFilename(currfile.getName());
+	    		currfilestore.setFilelocation(currfile.getPath());
+	    		
+	    		
+	    		if(currfile.length()/1000 < 1)
+	    		{
+	    		currfilestore.setFilesize(1);
+	    		}
+	    		else
+	    		{
+	    	     currfilestore.setFilesize(currfile.length()/1000);
+	    		}
+	    		
+	    		
+	    		
+	    		currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
+	    		currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
+	    
+	    	
+	    		
+	    		
+	    		
+	    		allfiles.add(currfilestore);
+	    		
+	    		files.add(currfile);
+	    		filenames.add(currfile.getName());
+	    		
+	    	}
+	    	
+	    	
+	    	selectedPub.setFiles(files);
+	    	selectedPub.setFilenames(filenames);
+	    	
+	   	 if(step != 0)
+	   	 {
+	    	try{
+	    	//zip.zipFiles(foldertozip);  
+	    	zip.setPmid(this.selectedPub.getPmid());	
+	    	zip.Zipfiles(currlocation, zipfilelocation);
+	    	
+    
+	    	}
+	    	catch (Exception ex)
+	    	{
+	    		logger.info(ex);
+	    		
+	    	}
+	   	 }
+
+	      
+	    }
+	    
+	    
+	    
+	    public void getStoredFilesforDraftPointOnly()
+	    {
+	    	String currlocation = PropsUtil.get("data_store2") + this.selectedPub.getPmid() + "/";
 	    	String zipfilelocation = currlocation+ this.selectedPub.getPmid()+".zip";
 	    	File foldertozip = new File(currlocation);
 	    	 
@@ -1415,25 +1503,7 @@ public void setFiles(List<File> files)
 	    	
 	    	selectedPub.setFiles(files);
 	    	selectedPub.setFilenames(filenames);
-	    	
-	   	 if(step != 0)
-	   	 {
-	    	try{
-	    	zip.zipFiles(foldertozip); 
-	    	
-    
-	    	}
-	    	catch (Exception ex)
-	    	{
-	    		logger.info(ex);
-	    		
-	    	}
-	   	 }
-
-	      
 	    }
-	    
-	    
 	    
 	    
 	    public void sendtoSolr()
@@ -1441,7 +1511,8 @@ public void setFiles(List<File> files)
 	    	List<String> filesanddata = new ArrayList<String>();
 	    	
 	    	String allstrings = "";
-	    	
+	    	User currentUser = LiferayFacesContext.getInstance().getUser();
+	    	String userId = Long.toString(currentUser.getUserId());
 	    	for(FileStorer currfile: allfiles)
 	    	{
 	    		
@@ -1467,7 +1538,7 @@ public void setFiles(List<File> files)
 	    	 SolrInputDocument metadoc = new SolrInputDocument();
 	    	 
 	    	 metadoc.addField("pmid", selectedPub.getPmid());
-	    	 metadoc.addField("pid", UUID.randomUUID());
+	    	// metadoc.addField("pid", UUID.randomUUID());
 	    
 	    	    metadoc.addField("abstract", selectedPub.getAbstract());
 	    	   metadoc.addField("publicationdate_year", selectedPub.getYear());
@@ -1483,7 +1554,9 @@ public void setFiles(List<File> files)
 		    	 metadoc.addField("epubmonth", selectedPub.getEpubmonth());
 		    	 metadoc.addField("epubyear", selectedPub.getEpubyear());
 		    	 metadoc.addField("author_fullname_list", selectedPub.getAuthorfull());
-		    	
+		    	 metadoc.addField("completion", "false");
+		    	 metadoc.addField("draftpoint", "1" );
+		    	 metadoc.addField("lruid", userId);
 	    	  
 	    	   metadoc.addField("ptitle", selectedPub.getTitle() );  
 	    	   
@@ -1498,7 +1571,7 @@ public void setFiles(List<File> files)
 	    		  metadoc.addField("pfileinfo",currstring);
 	    	  }
 	    	    
-	    	    HttpSolrServer server = new HttpSolrServer("http://localhost:8983/solr");
+	    	   
 	    	    server.add(metadoc);
 	    	    server.commit();
 	    	}
@@ -1508,6 +1581,22 @@ public void setFiles(List<File> files)
 	    	}
 	    }
 
+	    public void deleteZipFromRecord()
+	    {
+	    	
+	    	for(FileStorer currfile: allfiles)
+	    	{
+	    		
+	    		if(currfile.getFilename().equals(selectedPub.getPmid()+".zip"))
+	    		{
+	    			allfiles.remove(currfile);
+	    		}
+	    		
+	    		
+	    	}
+	    	
+	    	
+	    }
 	    
 public int getCounter()
 {
@@ -1556,11 +1645,17 @@ public void downloadInit()
 
 public void downloadZipOnly()
 {
+	if(step == 0){
+	selectedpubpmid = selectedPub.getPmid();
 	
+	
+	
+
+	}
 	
 	selecteddownloadfile = new FileStorer();
 	
-	String fileloc = PropsUtil.get("data_store") + selectedpubpmid;
+	String fileloc = PropsUtil.get("data_store2") + selectedpubpmid;
 	String filen = selectedpubpmid + ".zip";
 	
     selecteddownloadfile.setFilelocation(fileloc);
@@ -1576,13 +1671,36 @@ public void downloadZipOnly()
 
 
 public void downloadFile(String filename, String filetype){
+	
+	//doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar
          
-         String contentType = "application/zip";
+         String contentType = "";
  
-         if(filetype.equals("abf")){
-                 contentType = "text/abf";
+         if(filetype.equals("zip") ){
+             contentType = "application/zip";
+          }
+         else if(filetype.equals("tar") ){
+             contentType = "application/tar";
+          }
+         else if(filetype.equals("xls") || filetype.equals("xlsx")){
+              contentType = "application/xls";
          }
-     
+         
+         else if(filetype.equals("doc") || filetype.equals("docx")){
+             contentType = "application/doc";
+          }
+         
+         else if(filetype.equals("pdf") ){
+             contentType = "application/pdf";
+          }
+         
+         else if(filetype.equals("xml") ){
+             contentType = "text/xml";
+          }
+         else
+         {
+        	 contentType = "text/plain";
+         }
        
     
          
@@ -1637,7 +1755,7 @@ public void FileSave()
 {
 	
 	String currpmid  = String.valueOf(selectedPub.getPmid());
-	String currlocation = PropsUtil.get("data_store")  + currpmid;
+	String currlocation = PropsUtil.get("data_store2")  + currpmid;
 	ArrayList<org.primefaces.model.UploadedFile> thefiles = new ArrayList<org.primefaces.model.UploadedFile>();
 	
 	 File thedir = new File(currlocation);
@@ -1745,6 +1863,344 @@ public void initialProcess() throws Exception
 
 	   
 	    
+}
+
+public void handleFileSavePoint1(ActionEvent event) {
+	if(event!=null)
+	{
+	
+		if(fchooser.getAllFiles().isEmpty())
+		{
+			FacesMessage msg1 = new FacesMessage("You must upload at least 1 file before you can save this publication.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg1);
+		}
+		else
+		{
+			FacesMessage msg1 = new FacesMessage("Saving your progress...please wait.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg1);
+			
+			draftPointSave1();
+			FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access your draft under 'View My Publications'.");
+			FacesContext.getCurrentInstance().addMessage(null, msg2);
+		}
+	}
+}
+
+
+public void handleFileSavePoint2(ActionEvent event) {
+	if(event!=null)
+	{
+	
+	FacesMessage msg1 = new FacesMessage("Saving your progress...please wait.", "");
+	FacesContext.getCurrentInstance().addMessage(null, msg1);
+	
+	draftPointSave2();
+	FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access your draft under 'View My Publications'.");
+	FacesContext.getCurrentInstance().addMessage(null, msg2);
+	}
+}
+
+//save and return upload
+public void handleFileSavePoint3(ActionEvent event) {
+	if(event!=null)
+	{
+	
+		if(fchooser.getAllFiles().isEmpty())
+		{
+			FacesMessage msg1 = new FacesMessage("You must upload at least 1 file before you can save this publication.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg1);
+		}
+		else
+		{
+				
+			FacesMessage msg1 = new FacesMessage("Saving your progress...please wait.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg1);
+			getStoredFilesforDraftPointOnly();
+			draftPointSave1();
+			FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access your draft under 'View My Publications'.");
+			FacesContext.getCurrentInstance().addMessage(null, msg2);
+			moveStep(8);
+		}
+	}
+
+}
+
+//save and return descriptions
+public void handleFileSavePoint4(ActionEvent event) {
+	if(event!=null)
+	{
+	
+	FacesMessage msg1 = new FacesMessage("Saving your progress...please wait.", "");
+	FacesContext.getCurrentInstance().addMessage(null, msg1);
+	
+	draftPointSave2();
+	FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access your draft under 'View My Publications'.");
+	FacesContext.getCurrentInstance().addMessage(null, msg2);
+
+	}
+	moveStep(8);
+}
+
+//update SOLR with the user's draftpoint save point 1
+public void draftPointSave1()
+{
+	
+	List<String> filesanddata = new ArrayList<String>();
+	
+	String allstrings = "";
+	
+	User currentUser = LiferayFacesContext.getInstance().getUser();
+	
+	String userId = Long.toString(currentUser.getUserId());
+	
+	
+ 
+	
+	
+	
+	
+	
+	for(FileStorer currfile: allfiles)
+	{
+		
+		
+		String cfilesize = "filesize:" + String.valueOf(currfile.getFilesize());
+		String cfiledescription = ",filedescription:" + currfile.getDescription();
+		String cfilefigure = ",filefigure:" + currfile.getFigure();
+		String cfilepanel = ",filepanel:" + currfile.getPanel();
+		String cfilename = ",filename:" + currfile.getFilename();
+		
+		
+		allstrings = cfilesize + cfiledescription + cfilefigure + cfilepanel + cfilename;
+		
+		filesanddata.add(allstrings);
+		
+		
+	}
+	
+	 
+	try
+	{
+
+	 SolrInputDocument metadoc = new SolrInputDocument();
+	 
+	 metadoc.addField("pmid", selectedPub.getPmid());
+	 //metadoc.addField("pid", UUID.randomUUID());
+
+	    metadoc.addField("abstract", selectedPub.getAbstract());
+	   metadoc.addField("publicationdate_year", selectedPub.getYear());
+	   metadoc.addField("doi", selectedPub.getDoi());
+		 metadoc.addField("journalvolume", selectedPub.getJournalvolume());
+    	 metadoc.addField("journalissue", selectedPub.getJournalissue());
+    	 metadoc.addField("journalmonth", selectedPub.getJournalmonth());
+    	 metadoc.addField("journalyear", selectedPub.getJournalyear());
+    	 metadoc.addField("journalday", selectedPub.getJournalday());
+    	 metadoc.addField("journalname", selectedPub.getJournalname());
+    	 metadoc.addField("journalpage", selectedPub.getJournalstartpg());
+    	 metadoc.addField("epubday", selectedPub.getEpubday());
+    	 metadoc.addField("epubmonth", selectedPub.getEpubmonth());
+    	 metadoc.addField("epubyear", selectedPub.getEpubyear());
+    	 metadoc.addField("author_fullname_list", selectedPub.getAuthorfull());
+    	 metadoc.addField("completion", "false");
+    	 metadoc.addField("draftpoint", "1" );
+    	 metadoc.addField("lruid", userId);
+    	
+	  
+	   metadoc.addField("ptitle", selectedPub.getTitle() );  
+	   
+	  for(int i=0; i<selectedPub.getFauthors().size(); i++) 
+	  {
+	     metadoc.addField("author_firstname",selectedPub.getFauthors().get(i));
+	     metadoc.addField("author_lastname",selectedPub.getLauthors().get(i)); 
+	  }
+	  
+	  for(String currstring: filesanddata)
+	  {
+		  metadoc.addField("pfileinfo",currstring);
+	  }
+	    
+	    
+	    server.add(metadoc);
+	    server.commit();
+	}
+	catch(Exception ex)
+	{
+		logger.info(ex);
+	}
+	
+	
+}
+
+
+//update SOLR with the user's draftpoint save point 2
+public void draftPointSave2()
+{
+	
+	
+	List<String> filesanddata = new ArrayList<String>();
+	
+	String allstrings = "";
+	
+	User currentUser = LiferayFacesContext.getInstance().getUser();
+	
+	String userId = Long.toString(currentUser.getUserId());
+	
+	
+	
+	
+	for(FileStorer currfile: allfiles)
+	{
+		
+		
+		String cfilesize = "filesize:" + String.valueOf(currfile.getFilesize());
+		String cfiledescription = ",filedescription:" + currfile.getDescription();
+		String cfilefigure = ",filefigure:" + currfile.getFigure();
+		String cfilepanel = ",filepanel:" + currfile.getPanel();
+		String cfilename = ",filename:" + currfile.getFilename();
+		
+		
+		allstrings = cfilesize + cfiledescription + cfilefigure + cfilepanel + cfilename;
+		
+		filesanddata.add(allstrings);
+		
+		
+	}
+	
+	 
+	try
+	{
+
+	 SolrInputDocument metadoc = new SolrInputDocument();
+	 
+	 metadoc.addField("pmid", selectedPub.getPmid());
+	 //metadoc.addField("pid", UUID.randomUUID());
+
+	    metadoc.addField("abstract", selectedPub.getAbstract());
+	   metadoc.addField("publicationdate_year", selectedPub.getYear());
+	   metadoc.addField("doi", selectedPub.getDoi());
+		 metadoc.addField("journalvolume", selectedPub.getJournalvolume());
+    	 metadoc.addField("journalissue", selectedPub.getJournalissue());
+    	 metadoc.addField("journalmonth", selectedPub.getJournalmonth());
+    	 metadoc.addField("journalyear", selectedPub.getJournalyear());
+    	 metadoc.addField("journalday", selectedPub.getJournalday());
+    	 metadoc.addField("journalname", selectedPub.getJournalname());
+    	 metadoc.addField("journalpage", selectedPub.getJournalstartpg());
+    	 metadoc.addField("epubday", selectedPub.getEpubday());
+    	 metadoc.addField("epubmonth", selectedPub.getEpubmonth());
+    	 metadoc.addField("epubyear", selectedPub.getEpubyear());
+    	 metadoc.addField("author_fullname_list", selectedPub.getAuthorfull());
+    	 metadoc.addField("completion", "false");
+    	 metadoc.addField("draftpoint", "2" );
+    	 metadoc.addField("lruid", userId);
+    	
+	  
+	   metadoc.addField("ptitle", selectedPub.getTitle() );  
+	   
+	  for(int i=0; i<selectedPub.getFauthors().size(); i++) 
+	  {
+	     metadoc.addField("author_firstname",selectedPub.getFauthors().get(i));
+	     metadoc.addField("author_lastname",selectedPub.getLauthors().get(i)); 
+	  }
+	  
+	  for(String currstring: filesanddata)
+	  {
+		  metadoc.addField("pfileinfo",currstring);
+	  }
+	    
+	    
+	    server.add(metadoc);
+	    server.commit();
+	}
+	catch(Exception ex)
+	{
+		
+	}
+}
+
+public void draftPointSave3()
+{
+	List<String> filesanddata = new ArrayList<String>();
+	
+	String allstrings = "";
+	
+	User currentUser = LiferayFacesContext.getInstance().getUser();
+	
+	String userId = Long.toString(currentUser.getUserId());
+	
+	
+
+	
+	
+	
+	finalsave = true;
+	
+	for(FileStorer currfile: allfiles)
+	{
+		
+		
+		String cfilesize = "filesize:" + String.valueOf(currfile.getFilesize());
+		String cfiledescription = ",filedescription:" + currfile.getDescription();
+		String cfilefigure = ",filefigure:" + currfile.getFigure();
+		String cfilepanel = ",filepanel:" + currfile.getPanel();
+		String cfilename = ",filename:" + currfile.getFilename();
+		
+		
+		allstrings = cfilesize + cfiledescription + cfilefigure + cfilepanel + cfilename;
+		
+		filesanddata.add(allstrings);
+		
+		
+	}
+	
+	 
+	try
+	{
+
+	 SolrInputDocument metadoc = new SolrInputDocument();
+	 
+	 metadoc.addField("pmid", selectedPub.getPmid());
+	 //metadoc.addField("pid", UUID.randomUUID());
+
+	    metadoc.addField("abstract", selectedPub.getAbstract());
+	   metadoc.addField("publicationdate_year", selectedPub.getYear());
+	   metadoc.addField("doi", selectedPub.getDoi());
+		 metadoc.addField("journalvolume", selectedPub.getJournalvolume());
+    	 metadoc.addField("journalissue", selectedPub.getJournalissue());
+    	 metadoc.addField("journalmonth", selectedPub.getJournalmonth());
+    	 metadoc.addField("journalyear", selectedPub.getJournalyear());
+    	 metadoc.addField("journalday", selectedPub.getJournalday());
+    	 metadoc.addField("journalname", selectedPub.getJournalname());
+    	 metadoc.addField("journalpage", selectedPub.getJournalstartpg());
+    	 metadoc.addField("epubday", selectedPub.getEpubday());
+    	 metadoc.addField("epubmonth", selectedPub.getEpubmonth());
+    	 metadoc.addField("epubyear", selectedPub.getEpubyear());
+    	 metadoc.addField("author_fullname_list", selectedPub.getAuthorfull());
+    	 metadoc.addField("completion", "true");
+    	 metadoc.addField("draftpoint", "2" );
+    	 metadoc.addField("lruid", userId);
+    	
+	  
+	   metadoc.addField("ptitle", selectedPub.getTitle() );  
+	   
+	  for(int i=0; i<selectedPub.getFauthors().size(); i++) 
+	  {
+	     metadoc.addField("author_firstname",selectedPub.getFauthors().get(i));
+	     metadoc.addField("author_lastname",selectedPub.getLauthors().get(i)); 
+	  }
+	  
+	  for(String currstring: filesanddata)
+	  {
+		  metadoc.addField("pfileinfo",currstring);
+	  }
+	    
+	    
+	    server.add(metadoc);
+	    server.commit();
+	}
+	catch(Exception ex)
+	{
+		
+	}
 }
 
 

@@ -16,7 +16,8 @@
  
 <h:form id="finalcomplete" >  
 
-
+<h:outputText style="font-weight: bold" value="Your entry is now complete. It is now accessible to other users."/>
+<br/><br/><br/>
 
 	
  
@@ -74,7 +75,7 @@
 </p:dataTable >
 <br/>
 
-<p:commandButton value="Return to Start a New Entry" id="startover" action="#{pubMedSearch.moveStep(8)}"/>
+<p:commandButton value="Return to Start a New Entry" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
 
 
 </h:form>
