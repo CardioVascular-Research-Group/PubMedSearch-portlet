@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -21,7 +20,7 @@ import org.primefaces.model.UploadedFile;
 
 import com.liferay.portal.kernel.util.PropsUtil;
 
-import edu.jhu.cvrg.ceptools.main.PubMedSearch;
+
 import edu.jhu.cvrg.ceptools.model.FileStorer;
 
 @ManagedBean(name="fileUploadController")
@@ -29,15 +28,14 @@ import edu.jhu.cvrg.ceptools.model.FileStorer;
 
 public class FileUploadController implements Serializable{
 
-    /**
-	 * 
-	 */
+ 
 	
 	private UploadedFile file;
     private ArrayList<UploadedFile> allfiles;
     private int pmid;
-    private static Logger logger = Logger.getLogger(PubMedSearch.class.getName());
+    private static Logger logger = Logger.getLogger(FileUploadController.class.getName());
     private ArrayList<FileStorer> filesondrive;
+    private static final long serialVersionUID = 2L;
     
     public FileUploadController()
     {
@@ -82,35 +80,27 @@ public class FileUploadController implements Serializable{
     
     private void RetrieveFiles() {
 		 
-		
-    	
+
     	String currlocation = PropsUtil.get("data_store2") + this.pmid + "/";
-    	String zipfilelocation = currlocation+ this.pmid+".zip";
-    	File foldertozip = new File(currlocation);
-    	 
-    	
-    	
     	File folder = new File(currlocation);
     	
     	
-    if(folder.exists())
-    {
-    	
-    	for(File currfile: folder.listFiles())
+    	if(folder.exists())
     	{
     	
-           String absolutePath = currfile.getAbsolutePath();
-    		FileStorer currfilestore = new FileStorer();
-    		currfilestore.setFilename(currfile.getName());
-    		currfilestore.setFilelocation(currlocation);
-    		currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
-    		currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
-    		
-    		filesondrive.add(currfilestore);
-    		
-    		
+    		for(File currfile: folder.listFiles())
+    		{
+    	
+    			String absolutePath = currfile.getAbsolutePath();
+    			FileStorer currfilestore = new FileStorer();
+    			currfilestore.setFilename(currfile.getName());
+    			currfilestore.setFilelocation(currlocation);
+    			currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
+    			currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));	
+    			filesondrive.add(currfilestore);
+    			
+    		}
     	}
-    }
     	
     	
     }
@@ -126,16 +116,14 @@ public class FileUploadController implements Serializable{
     			filecheck = true;
     		}
     	}
-    	
-    	
+
 		    	if(filecheck == true)
 		    	{
-		    
-		 		return false;
+		    		return true;
 		    	}
 		    	else
 		    	{
-		       return true; 		
+		    		return false; 		
 		    	}
     }
     
@@ -145,47 +133,34 @@ public class FileUploadController implements Serializable{
     	
     	String currpmid  = String.valueOf(pmid);
     	String currlocation = PropsUtil.get("data_store2")+ currpmid+"/";
-   
     	ArrayList<org.primefaces.model.UploadedFile> thefiles = new ArrayList<org.primefaces.model.UploadedFile>();
-    	
-    	boolean result;
-    	
-    	
-    	 File thedir = new File(currlocation);
-    	
-    	 
+    	File thedir = new File(currlocation);
+
     	if(!thedir.exists())
     	{
  
     	 thedir.mkdirs();
    
     	}
-    	else
-    	{
-    		
-    		
-    	}
+    
     	
-    	//Now add files to it
     	 try
     	   {
-    	thefiles = this.getAllFiles();
+    		 thefiles = this.getAllFiles();
     	 
-    	for(org.primefaces.model.UploadedFile currfile: thefiles)
-    	  { 
+    		 	for(org.primefaces.model.UploadedFile currfile: thefiles)
+    		 	{ 
     	
-    		
-    	   String fullfilelocation = currlocation + currfile.getFileName();
-    	   File myfile = new File(fullfilelocation);
-    	   OutputStream out = new FileOutputStream(myfile);
-    	   InputStream in = currfile.getInputstream();
+    		 		String fullfilelocation = currlocation + currfile.getFileName();
+    		 		File myfile = new File(fullfilelocation);
+    		 		OutputStream out = new FileOutputStream(myfile);
+    		 		InputStream in = currfile.getInputstream();
     	 
-	      org.apache.commons.io.IOUtils.copy(in, out);
+    		 		org.apache.commons.io.IOUtils.copy(in, out);
 	    
-    	  out.close();
-    	}
+    		 		out.close();
+    		 	}
     	
-
     	
     	}
     	catch(Exception ex)
@@ -199,35 +174,34 @@ public class FileUploadController implements Serializable{
 
 
     public void handleFileUpload(FileUploadEvent event) {
+    	
     	if(event!=null)
     	{
-    	UploadedFile currentfile = 	event.getFile();
-    	//allfiles = new ArrayList<UploadedFile> ();
+  
+    		this.setFile(event.getFile());
     	
-    	this.setFile(event.getFile());
+    		if(filesondrive.isEmpty())
+    		{
+    			RetrieveFiles();	
+    		}
+    		else
+    		{
+    			filesondrive = new ArrayList<FileStorer> ();
+    			RetrieveFiles();
+    		}
     	
-    	if(filesondrive.isEmpty())
-    	{
-    		 RetrieveFiles();	
-    	}
-    	else
-    	{
-    		filesondrive = new ArrayList<FileStorer> ();
-    		RetrieveFiles();
-    	}
-    	
-    	if(checkUploads())
-    	{
-    	this.allfiles.add(event.getFile());
-    	FileSave();
-    	FacesMessage msg = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
-    	FacesContext.getCurrentInstance().addMessage(null, msg);
-    	}
-    	else
-    	{
-    		 FacesMessage msg = new FacesMessage("You can not upload a file with the same name as a file already stored.", file.getFileName() + " was not saved. Please change the name and try again.");
-    	    FacesContext.getCurrentInstance().addMessage(null, msg);
-    	}
+    	    if(!checkUploads())
+    	    {
+    	    	this.allfiles.add(event.getFile());
+    	    	FileSave();
+    	    	FacesMessage msg = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
+    			FacesContext.getCurrentInstance().addMessage(null, msg);
+    	    }
+    	    else
+    	    {
+    	    	FacesMessage msg = new FacesMessage("You can not upload a file with the same name as a file already stored.", file.getFileName() + " was not saved. Please change the name and try again.");
+    	    	FacesContext.getCurrentInstance().addMessage(null, msg);
+    	    }
     	
     	
 

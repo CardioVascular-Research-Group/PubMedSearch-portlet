@@ -54,8 +54,9 @@ public class FileDownloadController implements Serializable{
     private String filelocation;
     private String filename;
     private String filetype;
+    private static final long serialVersionUID = 1L;
     
-    private static Logger logger = Logger.getLogger(PubMedSearch.class.getName());  
+
     
     public FileDownloadController() {  
     	filename = "";

@@ -2,13 +2,13 @@ package edu.jhu.cvrg.ceptools.utility;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -17,35 +17,21 @@ import javax.faces.bean.ViewScoped;
 
 
 
-
-
-import org.apache.log4j.Logger;
-
-import edu.jhu.cvrg.ceptools.model.FileStorer;
-
 @ManagedBean(name="zipDirectory")
 @ViewScoped
 
 public class ZipDirectory implements Serializable{
 	
-	  private static Logger logger = Logger.getLogger(ZipDirectory.class.getName());
-	  private static int loopcounter;
+
 	  private int pmid;
+	  private static final long serialVersionUID = 6L;
 
 	public ZipDirectory()
 	{
-		loopcounter = 0;
+		
 	}
 	
-	public int getLoopcounter()
-	{
-		return loopcounter;
-	}
 	
-	public void setLoopcounter(int s)
-	{
-	loopcounter = s;	
-	}
 	
 	public void setPmid(int i)
 	{
@@ -84,21 +70,21 @@ public class ZipDirectory implements Serializable{
 				if(!files[i].getName().equals(pmidfile))
 				{
 				
-				FileInputStream fis = new FileInputStream(files[i]);
+					FileInputStream fis = new FileInputStream(files[i]);
 
-				// begin writing a new ZIP entry, positions the stream to the start of the entry data
-				zos.putNextEntry(new ZipEntry(files[i].getName()));
+					// begin writing a new ZIP entry, positions the stream to the start of the entry data
+					zos.putNextEntry(new ZipEntry(files[i].getName()));
 				
-				int length;
+					int length;
 
-				while ((length = fis.read(buffer)) > 0) {
-					zos.write(buffer, 0, length);
-				}
+					while ((length = fis.read(buffer)) > 0) {
+						zos.write(buffer, 0, length);
+					}
 
-				zos.closeEntry();
+					zos.closeEntry();
 
-				// close the InputStream
-				fis.close();
+					// close the InputStream
+					fis.close();
 				}
 			}
 

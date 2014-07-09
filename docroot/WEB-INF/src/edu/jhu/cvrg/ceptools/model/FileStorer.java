@@ -3,9 +3,9 @@ package edu.jhu.cvrg.ceptools.model;
 import java.io.File;
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
+
 import javax.faces.bean.ViewScoped;
-@ManagedBean(name="fileStorer")
+
 @ViewScoped
 
 
@@ -23,7 +23,7 @@ public class FileStorer implements Serializable{
 	private File validator;
 	private long filesize;
 	private String figpandisplay;
-	
+	private static final long serialVersionUID = 4L;
 	
 	
 	private int index;
@@ -37,8 +37,7 @@ public class FileStorer implements Serializable{
 		panel = description = figure = message =  figpandisplay = "";
 		filesize = 0;
 		validator = new File("validatorfile");
-	
-		
+
 	}
 	
 	public String getFigpandisplay()
@@ -112,29 +111,26 @@ public class FileStorer implements Serializable{
     	description = d;
     }
 	
-	
-	  public int getIndex()
-      {
+	public int getIndex()
+     {
       	return index;
-      }
+     }
       
-      public void setIndex(int i)
-      {
+    public void setIndex(int i)
+     {
       	this.index = i;
-      }
+     }
       
-      public String getLocalfilestore()
-      {
-    	  return localfilestore;
-    	  
-      }
-	
+    public String getLocalfilestore()
+     {
+    	return localfilestore;  
+     }
       
-      public void setLocalfilestore(String lfs)
-      {
-    	  this.localfilestore = lfs;
-      }
-      
+    public void setLocalfilestore(String lfs)
+    {
+    	this.localfilestore = lfs;
+    }
+     
       
 	public void setFilename(String name)
 	{
@@ -155,7 +151,6 @@ public class FileStorer implements Serializable{
 	{
 		return filelocation;
 	}
-	
 	
 	public String getFiletype()
 	{

@@ -1,0 +1,33 @@
+<f:view
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+
+
+	<h:panelGrid columns="1" columnClasses="label, value" styleClass="grid" >
+		<h:form>
+			<h:outputText value="#{pubMedSearch.savemsg}" style="color:red"/><br/><br/>
+			<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." style="color:red"/>
+			<br/><br/><br/>
+					
+			<h:outputText value="Enter the title, author, or PMID of the publication to search PubMed.  "/>
+			<h:outputText value="Author names should be searched by last name, first name or last name, first initial."/>	<br/>	
+	
+			<h:inputText id="titleinput" value="#{pubMedSearch.usertitle}" style="width:400px" ></h:inputText><br/>
+			
+			<h:messages for="titleinput"/>
+			
+			<h:outputText value="#{pubMedSearch.redostep1}" style="color:red"/>
+			<a href="http://www.nlm.nih.gov/bsd/disted/pubmedtutorial/020_010.html" target="_blank" >How to search PubMed for citations</a>
+			<br/><br/>
+			 
+			<p:commandButton value="Next" id="step3next" action="#{pubMedSearch.moveStep(3)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+			
+		</h:form>
+	</h:panelGrid>
+
+</f:view>

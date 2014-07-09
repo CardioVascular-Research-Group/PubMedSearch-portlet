@@ -1,0 +1,45 @@
+<f:view
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+
+
+
+	<h:panelGrid columns="2" columnClasses="label, value">
+		<h:form id="confirmationcitation">
+		
+			<h:outputText value="Is this the correct citation?" style="font-weight: bold" /> <br/>
+	
+			<h:outputText value="If this is the correct record, please select the Next button below."/> 	<br/><br/>				
+			
+			<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt"/><br/>
+			<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff"/>. <br/>
+			<h:outputText value="#{pubMedSearch.selectedPub.journalname}"  id="selectedpubconfirmjn"/>.<h:outputText value="&#160;" />
+			<h:outputText value="#{pubMedSearch.selectedPub.journalyear}"  id="selectedpubconfirmjy"/><h:outputText value="&#160;" />
+			<h:outputText value="#{pubMedSearch.selectedPub.journalmonth}"  id="selectedpubconfirmjm"/><h:outputText value="&#160;" />
+			<h:outputText value="#{pubMedSearch.selectedPub.journalday}"  id="selectedpubconfirmjd"/>;<h:outputText value="&#160;" />
+			<h:outputText value="#{pubMedSearch.selectedPub.epubsum2}"  id="epubsum4"/><h:outputText value="&#160;" />
+			<br/>
+			<h:outputText value="#{pubMedSearch.selectedPub.doi}"  id="selectedpubdoi"/><h:outputText value="&#160;" />
+			<br/> 
+			<h:outputText value="#{pubMedSearch.selectedPub.epubsum}"  id="epubsum"/><h:outputText value="&#160;" />
+			<br/>
+			<h:outputText style="font-weight: bold" value="Abstract:  "/> 
+			<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma"/> <br/>  
+					
+			<br/>PMID: 
+			<h:outputText value="#{pubMedSearch.selectedPub.pmid}"  id="pmid1"/>
+
+			<br/><br/>
+	
+			<p:commandButton value="Back" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" /> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
+			<p:commandButton value="Next" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+			
+		</h:form>
+	</h:panelGrid>
+
+</f:view>
