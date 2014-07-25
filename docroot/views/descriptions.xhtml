@@ -39,7 +39,7 @@
 			            </p:cellEditor>  
 			        </p:column>  
 	
-			        <p:column headerText="Panel Number" style="width:10%">  
+			        <p:column headerText="Panel Label" style="width:10%">  
 			            <p:cellEditor>  
 			                <f:facet name="output">  
 			                    <h:outputText value="#{mfiles.panel}" />  
@@ -61,7 +61,7 @@
 			            </p:cellEditor>  
 			        </p:column>  
 			        
-			        <p:column headerText="Results" style="width:35%">  
+			        <p:column id="descriptionerrors" headerText="Error Messages for Incorrectly Entered Descriptions " style="width:35%; background-color:#BFBFCB">  
 			            <h:outputText value="#{mfiles.message}" style="color: red"/>  
 			        </p:column> 
 			  
@@ -72,11 +72,18 @@
 		<p:growl id="messages2" life="10000" showDetail="true" sticky="true"/>		
 		<br/>
 			
-		<p:commandButton value="Back" id="movebstep" validateClient="true" action="#{pubMedSearch.moveStep(5)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><h:outputText value="&#160;" />
-		<p:commandButton value="Next" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/>
-		<p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint2}" update="messages2"/><h:outputText value="&#160;" />
-		<p:commandButton value="Save Progress and Start a New Entry" actionListener="#{pubMedSearch.handleFileSavePoint4}" update="messages"/> 
-			
+		<p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint2}" update="messages2"/><h:outputText value="&#160;" /><br/>
+		<h:outputText value="Click to save your progess and store this publication record to your account. You may access the record at any time on the View Publications page to proceed with completing the entry." /><br/><br/>
+		
+		<p:commandButton value="Save Progress and Start a New Entry" actionListener="#{pubMedSearch.handleFileSavePoint4}" update="messages"/> <br/>
+		
+		<h:outputText value="Click to save your progress and restart the upload process. If no files have been uploaded, the selected publication will not be saved to your account." /><br/><br/>
+		<p:commandButton value="Back: Upload More Files" id="movebstep" validateClient="true" action="#{pubMedSearch.moveStep(5)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/>
+		
+		
+		<p:commandButton value="Submit and Complete Publication" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/>
+		<h:outputText value="Selecting this button will complete your submission and make it available to all users. You may return to add new files to this publication at any time through View My Publications" style="color:red"/><br/><br/>
+		<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." />	
 			
 	</h:form>
 

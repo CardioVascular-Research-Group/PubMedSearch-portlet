@@ -13,8 +13,8 @@
 			<h:outputText value="#{pubMedSearch.savemsg}" style="color:red"/><br/><br/>
 			<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." style="color:red"/>
 			<br/><br/><br/>
-					
-			<h:outputText value="Enter the title, author, or PMID of the publication to search PubMed.  "/>
+			<h:outputText value="The first step in the process of uploading documents and data to the site is to identify a valid PubMed publication."/> <br/>		
+			<h:outputText value="Enter PubMed search term(s). "/><br/>	
 			<h:outputText value="Author names should be searched by last name, first name or last name, first initial."/>	<br/>	
 	
 			<h:inputText id="titleinput" value="#{pubMedSearch.usertitle}" style="width:400px" ></h:inputText><br/>
@@ -25,7 +25,7 @@
 			<a href="http://www.nlm.nih.gov/bsd/disted/pubmedtutorial/020_010.html" target="_blank" >How to search PubMed for citations</a>
 			<br/><br/>
 			 
-			<p:commandButton value="Next" id="step3next" action="#{pubMedSearch.moveStep(3)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+			<p:commandButton value="Next: View Search Results and Select a Publication" id="step3next" action="#{pubMedSearch.moveStep(3)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
 			
 		</h:form>
 	</h:panelGrid>

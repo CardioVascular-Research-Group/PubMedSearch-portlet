@@ -55,23 +55,20 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
-
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
-
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
-
 import org.dom4j.io.SAXReader;
-
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 
 import com.liferay.faces.portal.context.LiferayFacesContext;
 import com.liferay.portal.kernel.util.PropsUtil;
-
 import com.liferay.portal.util.PortalUtil;
 
 import edu.jhu.cvrg.ceptools.controller.FileDownloadController;
@@ -562,6 +559,7 @@ public void cleanMutual()
  	 files = new ArrayList<File>();
  	 filenames = new ArrayList<String>();
  	 allfiles = new ArrayList<FileStorer>();
+ 	 usertitle = "";
  	 selectedfile = null;
  	 zip = new ZipDirectory();
  	 fdownload = new FileDownloadController();
@@ -585,77 +583,7 @@ public void moveStep(int nextstep)
 {
    int previousstep = step;
    savemsg = "";
- 
-   //These loops catch incoming issues where the user has used the back button
-   if (redostep3 == true && nextstep == 3 && previousstep !=4 && !usertitle.isEmpty())
-	{
-		if(selectedPub != null)
-		{
- 
-			 if(selectedPub.getExists())
-				{
-					step=99;
-				}
-			 else{
-			
-		step = 4;
-			 }
-		try{
-			LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
-			portletFacesContext.getExternalContext().redirect("upload");
-			return;
-		}
-		catch (Exception ex)
-		{
-			logger.info(ex);
-		}
-		
-		}
-		else
-		{
-			step = 3;
-			redostep3msg = "Please select a single citation from the list to proceed.";
-		}
-	}
-   if (redostep5 == true && nextstep == 5 && redostep6 == true)
-	{
-		if(!fchooser.getAllFiles().isEmpty())
-		{
-		
-				step = 6;
-				CleanFileStorage();
-				getStoredFiles();
-				 deleteZipFromRecord();
-				
-		
-
-		try{
-			LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
-			portletFacesContext.getExternalContext().redirect("upload");
-			return;
-		}
-		catch (Exception ex)
-		{
-			logger.info(ex);
-		}
-		
-		}
-		else
-		{
-			step = 5;
-			redostep5msg = "Please upload at least one file to the publication to proceed.";
-			try{
-				LiferayFacesContext portletFacesContext = LiferayFacesContext.getInstance();
-				portletFacesContext.getExternalContext().redirect("upload");
-				return;
-			}
-			catch (Exception ex)
-			{
-				logger.info(ex);
-			}
-		}
-	}
-
+  
 
    
 
@@ -677,31 +605,8 @@ public void moveStep(int nextstep)
 	   case 2:
 		   break;
 	   case 3:
-		   if(usertitle.isEmpty())
-					{
-						step =1;
-						redostep1 = "Please enter a valid search.";
-					}
-					
-					
-					else if(redostep3 == false)
-						{
-								 if (searchchoice == "searchauthor" || searchchoice=="searchtitle" || searchchoice=="searchpmid")
-								{
-									
-									  try{
-										  step = 3;
-								    	   processUrl(); 
-								    	   syncResults();
-								    	   }
-								    	   catch(Exception ex)
-								    	   {
-								    		 logger.info(ex);  
-								    	   }
-								}
-						}
-						
-						 redostep3 = true;
+
+		   step = 3;
 		   break;
 		   
 	   case 4:
@@ -743,21 +648,32 @@ public void moveStep(int nextstep)
 						    	   }
 						    	   catch(Exception ex)
 						    	   {
-						    		   
+						    		   logger.info(ex);
 						    	   }
 						}
 						 redostep3 = true;
+						
 				}
-		  break;
+			else
+			{
+				 step = 4;
+			}  
+		break;
 	   case 4:
 		   redostep1 = "";
 			if(selectedPub != null)
 			{
-					
-			step = 5;
-			uploaderr = "";
-			setFchooservar();
-			redostep5 = true;	
+			
+				if(selectedPub.getExists())
+				{
+					step = 99;
+				}
+				else
+				{
+					step = 4;
+				}
+				
+			
 				
 			}
 			else
@@ -768,8 +684,17 @@ public void moveStep(int nextstep)
 			
 		   break;
 	   case 5:
-		   if(!fchooser.getAllFiles().isEmpty())
+		   if(previousstep == 4)
+		   {
+		    step = 5;
+			uploaderr = "";
+			setFchooservar();
+			redostep5 = true;	
+		   }
+		   else if(!fchooser.getAllFiles().isEmpty())
 			{
+			   
+			  logger.info("empty the cash here!");
 				uploaderr = "";
 		    	redostep5 = true;
 		    	draftPointSave1();
@@ -806,17 +731,16 @@ public void moveStep(int nextstep)
 	   case 7:
 		configDisplay ();
 		draftPointSave3();
+		
 		   break;
 	   case 8:
-		   if(finalsave == false)
+		   if(!fchooser.getAllFiles().isEmpty())
 		    {
 		    savemsg = "Your data has been saved. You may return to your entry under View Publications.";
 		    }
 			cleanMutual();
 			step=1;
-		   break;
-	   
-
+			  break;
 	   
 	   }
    
@@ -982,7 +906,7 @@ public void SearchSolrList(List<Integer> mypmids)
 					currlist.setTitle(doc.getFieldValue("ptitle").toString());
 					currlist.setAbstract(doc.getFieldValue("abstract").toString());
 					currlist.setPmid(Integer.valueOf(doc.getFieldValue("pmid").toString()));
-					
+					currlist.setCompleted(Boolean.valueOf(doc.getFieldValue("completion").toString()));
 					if(doc.getFieldValues("pfileinfo") != null)
 					{
 					
@@ -1010,6 +934,7 @@ public void SearchSolrList(List<Integer> mypmids)
 						 {
 							
 							 publications.get(currcounter).setExists(true);
+							 publications.get(currcounter).setCompleted(solrmatch.getCompleted()); 
 							 publications.get(currcounter).setFstorefiles(solrmatch.getFstorefiles());
 							 
 
@@ -1274,7 +1199,7 @@ public void getStoredFilesforDraftPointOnly()
 	    		currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
 	    		currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
 	    		
-	    		
+	    		logger.info("Adding file: " + currfilestore.getFilename());
 	    		
 	    		allfiles.add(currfilestore);
 	    		
@@ -1310,22 +1235,73 @@ public void sendtoSolr()
 	    	}
 	    }
 
+public void handleFileUpload(FileUploadEvent event) {
+	
+	if(event!=null)
+	{
+
+		fchooser.setFile(event.getFile());
+	
+		if(fchooser.getFilesondrive().isEmpty())
+		{
+			fchooser.RetrieveFiles();	 
+		}
+		else
+		{
+			fchooser.setFilesondrive(new ArrayList<FileStorer> ());
+			fchooser.RetrieveFiles();
+		}
+	
+	    if(!fchooser.checkUploads())
+	    {
+	    	fchooser.getAllFiles().add(event.getFile());
+	    	fchooser.FileSave();
+	    	
+	    	getStoredFilesforDraftPointOnly();
+			draftPointSave1();
+			setSavedMsg();
+	    	
+	    	
+	    	
+	    	FacesMessage msg = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+	    }
+	    else
+	    {
+	    	FacesMessage msg = new FacesMessage("You can not upload a file with the same name as a file already stored.", fchooser.getFile().getFileName() + " was not saved. Please change the name and try again.");
+	    	FacesContext.getCurrentInstance().addMessage(null, msg);
+	    }
+	
+	    RequestContext.getCurrentInstance().execute("jQuery(\"div.fileupload-content tr.ui-state-error\").remove();");
+	   
+       
+	}
+
+}
+
 public void deleteZipFromRecord()
 	    {
 	    	
-	    	for(FileStorer currfile: allfiles)
+	//making an artificially large number to ensure the index is found
+  Iterator<FileStorer> myitr = allfiles.iterator();
+	 
+	    	while (myitr.hasNext())
 	    	{
-	    		
+	    		FileStorer currfile = (FileStorer) myitr.next();
 	    		if(currfile.getFilename().equals(selectedPub.getPmid()+".zip"))
 	    		{
-	    			allfiles.remove(currfile);
+	    	      myitr.remove();
 	    		}
 	    		
 	    		
 	    	}
 	    	
+	    
 	    	
 	    }
+
+
+
 	    
 public int getCounter()
 {
@@ -1497,7 +1473,7 @@ public void FileSave()
 	    out = new FileOutputStream(myfile);
 	    org.apache.commons.io.IOUtils.copy(in, out);
 	     
-	 
+	    
 	}
 	
 	}
@@ -1619,8 +1595,8 @@ public void handleFileSavePoint3(ActionEvent event) {
 	
 		if(fchooser.getAllFiles().isEmpty())
 		{
-			FacesMessage msg1 = new FacesMessage("You must upload at least 1 file before you can save this publication.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg1);
+			
+			moveStep(8);
 		}
 		else
 		{
@@ -1682,7 +1658,9 @@ filesanddata = new ArrayList<String>();
 }
 
 public void setSOLRMetadata()
-{
+
+{ 
+	server = new HttpSolrServer("http://localhost:8983/solr");
 		 metadoc = new SolrInputDocument();
 	 
 	 	 metadoc.addField("pmid", selectedPub.getPmid());
@@ -1725,6 +1703,7 @@ public void draftPointSave1()
 
 	try
 	{
+		
 		setSOLRMetadata();
 	metadoc.addField("completion", "false");
     metadoc.addField("draftpoint", "1" ); 

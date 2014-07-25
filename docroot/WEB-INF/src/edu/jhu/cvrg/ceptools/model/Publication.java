@@ -37,6 +37,7 @@ public class Publication implements Serializable{
 	    private int pmid;
 	    private int index;
 	    private boolean exists;
+	    private boolean completed;
 
 	    private List<File> files;
 	    private List<String> filenames;
@@ -61,7 +62,7 @@ public class Publication implements Serializable{
         	
         	index = -1;
         	pmid = 0;
-        	exists = false;
+        	exists = completed = false;
         }
 
         
@@ -123,6 +124,16 @@ public class Publication implements Serializable{
         public void setIndex(int i)
         {
         	this.index = i;
+        }
+        
+        public void setCompleted(boolean s)
+        {
+        	completed = s;
+        }
+        
+        public boolean getCompleted()
+        {
+        	return completed;
         }
         
         public void setExists(boolean s)

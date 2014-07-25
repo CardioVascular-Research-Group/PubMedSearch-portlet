@@ -12,14 +12,15 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import com.liferay.portal.kernel.util.PropsUtil;
-
 
 import edu.jhu.cvrg.ceptools.model.FileStorer;
 
@@ -43,6 +44,17 @@ public class FileUploadController implements Serializable{
     	filesondrive = new ArrayList<FileStorer> ();
     	pmid = 0;
     	
+    }
+    
+    public void setFilesondrive(ArrayList<FileStorer> g)
+    {
+    	filesondrive = g;
+    	
+    }
+    
+    public ArrayList<FileStorer> getFilesondrive()
+    {
+    	return filesondrive;
     }
 
     public UploadedFile getFile() {
@@ -78,7 +90,7 @@ public class FileUploadController implements Serializable{
 		FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     
-    private void RetrieveFiles() {
+    public void RetrieveFiles() {
 		 
 
     	String currlocation = PropsUtil.get("data_store2") + this.pmid + "/";
@@ -133,6 +145,7 @@ public class FileUploadController implements Serializable{
     	
     	String currpmid  = String.valueOf(pmid);
     	String currlocation = PropsUtil.get("data_store2")+ currpmid+"/";
+    	
     	ArrayList<org.primefaces.model.UploadedFile> thefiles = new ArrayList<org.primefaces.model.UploadedFile>();
     	File thedir = new File(currlocation);
 
@@ -144,9 +157,16 @@ public class FileUploadController implements Serializable{
     	}
     
     	
+    
+    	
     	 try
     	   {
     		 thefiles = this.getAllFiles();
+    		 logger.info("The list of files is: ");
+    	    	for(UploadedFile currfile:thefiles)
+    	    	{
+    	    		logger.info(currfile.getFileName());
+    	    	}
     	 
     		 	for(org.primefaces.model.UploadedFile currfile: thefiles)
     		 	{ 
@@ -165,7 +185,7 @@ public class FileUploadController implements Serializable{
     	}
     	catch(Exception ex)
     	{
-    		logger.info(ex);
+    		logger.error("Error: ",ex);
     	}
     	
     	
@@ -203,10 +223,18 @@ public class FileUploadController implements Serializable{
     	    	FacesContext.getCurrentInstance().addMessage(null, msg);
     	    }
     	
-    	
+    	    RequestContext.getCurrentInstance().execute("jQuery(\"div.fileupload-content tr.ui-state-error\").remove();");
 
     	}
     
+    }
+    
+    public void handleClearErr(ActionEvent event) {
+    	if(event!=null)
+    	{
+    		 RequestContext.getCurrentInstance().execute("jQuery(\"div.fileupload-content tr.ui-state-error\").remove();");
+    		
+    	}
     }
     
 

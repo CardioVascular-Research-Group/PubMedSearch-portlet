@@ -15,7 +15,9 @@
 		
 			<h:outputText value="Is this the correct citation?"/><br/>
 		
-			<h:outputText style="color: red" value="This record has already been added to the site, with downloadable files available. Would you like to view this record?"/> 					
+			<h:outputText rendered="#{pubMedSearch.selectedPub.completed}" style="color: red" value="This record has already been added to the site, with downloadable files available. Would you like to view this record?"/> 		
+			<h:outputText rendered="#{!pubMedSearch.selectedPub.completed}" style="color: red" value="This record has already been added to the site, but another user is still editting it and has not completed. This publication will be available for viewing and downloading files once the user completes the entry."/> 								
+			<h:outputText rendered="#{!pubMedSearch.selectedPub.completed}" style="color: red" value="Please return to start a new search using the button below."/> 
 			<br/>
 			<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt3"/>. <br/>
 			<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff3"/>. <br/>
@@ -36,7 +38,9 @@
 		
 		
 		
-			<p:commandButton value="View the existing record" action="#{pubMedSearch.moveStep(0)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
+			<p:commandButton rendered="#{pubMedSearch.selectedPub.completed}" value="View the existing record" action="#{pubMedSearch.moveStep(0)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
+			
+			
 			<p:commandButton value="Start a New Search for Import" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
 		
 		</h:form>

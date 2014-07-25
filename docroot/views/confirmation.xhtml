@@ -36,9 +36,9 @@
 
 			<br/><br/>
 	
-			<p:commandButton value="Back" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" /> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-			<p:commandButton value="Next" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
-			
+			<p:commandButton value="Back: Make a Different Selection" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" /> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
+			<p:commandButton value="Next: Upload Files to this Publication" action="#{pubMedSearch.moveStep(5)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/>
+			<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." />
 		</h:form>
 	</h:panelGrid>
 
