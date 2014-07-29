@@ -66,6 +66,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import com.liferay.faces.portal.context.LiferayFacesContext;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -99,11 +100,14 @@ public class PubMedSearch implements Serializable{
     private String base;
     private String redostep1;
     private boolean redostep3;
-    private boolean redostep5;
+    @SuppressWarnings("unused")
+	private boolean redostep5;
+    @SuppressWarnings("unused")
     private boolean redostep6;
     private String redostep3msg;
     private String redostep5msg;
     private String redostep6msg;
+    @SuppressWarnings("unused")
     private boolean finalsave;
     
     
@@ -137,6 +141,7 @@ public class PubMedSearch implements Serializable{
     private List<File> files;
     private List<String> filenames;
     private List<FileStorer> allfiles;
+    private List<FileStorer> previousfiles;
     private FileStorer selectedfile;
     private int selectedpubpmid; //specifically for filechooser for storage
     private ZipDirectory zip;
@@ -447,6 +452,7 @@ public class PubMedSearch implements Serializable{
 	    	 files = new ArrayList<File>();
 	    	 filenames = new ArrayList<String>();
 	    	 allfiles = new ArrayList<FileStorer>();
+	    	 previousfiles = new ArrayList<FileStorer>();
 	    	 selectedfile = null;
 	    	 zip = new ZipDirectory();
 	    	 finalsave = false;
@@ -472,7 +478,7 @@ public class PubMedSearch implements Serializable{
 	   public void checkUpload()
 	   {
 		   
-		   if(!fchooser.getAllFiles().isEmpty())
+		   if(!fchooser.getAllfiles().isEmpty())
 		   {
 			   moveStep(4);
 		   }
@@ -565,6 +571,7 @@ public void cleanMutual()
  	 fdownload = new FileDownloadController();
  	 selecteddownloadfile = null;
  	 index = 0;
+ 	 previousfiles = new ArrayList<FileStorer>();
  	 jv=jn=ji=jd=jm=jy=jsp=doi=epday=epmonth=epyear =epubsum = epubsum2 = "";
  	 selecteddownloadfiletype = selecteddownloadfilename = "";
   	searchchoice = "searchtitle";  
@@ -614,6 +621,9 @@ public void moveStep(int nextstep)
 		   break;
 	   case 5:
 		   step = 5;
+		   
+		   reconcileDescriptions();
+		   draftPointSave2();
 		   break;
 	
 	   default: step = 1;
@@ -691,10 +701,10 @@ public void moveStep(int nextstep)
 			setFchooservar();
 			redostep5 = true;	
 		   }
-		   else if(!fchooser.getAllFiles().isEmpty())
+		   else if(!fchooser.getAllfiles().isEmpty())
 			{
 			   
-			  logger.info("empty the cash here!");
+			  
 				uploaderr = "";
 		    	redostep5 = true;
 		    	draftPointSave1();
@@ -734,9 +744,9 @@ public void moveStep(int nextstep)
 		
 		   break;
 	   case 8:
-		   if(!fchooser.getAllFiles().isEmpty())
+		   if(!fchooser.getAllfiles().isEmpty())
 		    {
-		    savemsg = "Your data has been saved. You may return to your entry under View Publications.";
+		    savemsg = "Your data has been saved to your account. You may return to this record by selecting View My Publications in the top menu.";
 		    }
 			cleanMutual();
 			step=1;
@@ -760,6 +770,53 @@ public void moveStep(int nextstep)
 	}
 }
 
+public void reconcileDescriptions()
+{
+	
+	for(FileStorer pfiles: previousfiles)
+	{
+		
+		for(FileStorer afiles: allfiles)
+		{
+			
+			if(afiles.getFilename().equals(pfiles.getFilename()))
+			{
+				
+				if(pfiles.getDescription().length() > 0)
+				{
+				afiles.setDescription(pfiles.getDescription());
+				}
+				if(pfiles.getFigure().length() > 0)
+				{
+				afiles.setFigure(pfiles.getFigure());
+				}
+				if(pfiles.getFilelocation().length() > 0)
+				{
+				afiles.setFilelocation(pfiles.getFilelocation());
+				}
+				if(pfiles.getPanel().length() > 0)
+				{
+				afiles.setPanel(pfiles.getPanel());
+				}
+				if(pfiles.getFigpandisplay().length() > 0)
+				{
+				afiles.setFigpandisplay(pfiles.getFigpandisplay());
+				}
+
+			}
+			
+			
+			
+		}
+		
+		
+		
+	}
+	
+	
+	
+	
+}
 
 public void validateDesc()
 	    {
@@ -1144,6 +1201,7 @@ public void getStoredFiles()
 	    	
 	    	selectedPub.setFiles(files);
 	    	selectedPub.setFilenames(filenames);
+	    	   reconcileDescriptions();
 	    	
 	   	 if(step != 0)
 	   	 {
@@ -1173,6 +1231,10 @@ public void getStoredFilesforDraftPointOnly()
 
 	    	File folder = new File(currlocation);
 	    	
+	    	previousfiles.addAll(allfiles);
+	    	
+	    	allfiles = new ArrayList<FileStorer>();
+	    	
 	    
 	    
 	    	
@@ -1199,7 +1261,7 @@ public void getStoredFilesforDraftPointOnly()
 	    		currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
 	    		currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
 	    		
-	    		logger.info("Adding file: " + currfilestore.getFilename());
+	    	
 	    		
 	    		allfiles.add(currfilestore);
 	    		
@@ -1211,6 +1273,8 @@ public void getStoredFilesforDraftPointOnly()
 	    	
 	    	selectedPub.setFiles(files);
 	    	selectedPub.setFilenames(filenames);
+	    	
+	    	   reconcileDescriptions();
 	    }
 	    
 	    
@@ -1241,6 +1305,7 @@ public void handleFileUpload(FileUploadEvent event) {
 	{
 
 		fchooser.setFile(event.getFile());
+		fchooser.setNewestfiles(new ArrayList<UploadedFile>());
 	
 		if(fchooser.getFilesondrive().isEmpty())
 		{
@@ -1251,26 +1316,24 @@ public void handleFileUpload(FileUploadEvent event) {
 			fchooser.setFilesondrive(new ArrayList<FileStorer> ());
 			fchooser.RetrieveFiles();
 		}
-	
-	    if(!fchooser.checkUploads())
-	    {
-	    	fchooser.getAllFiles().add(event.getFile());
+		  
+		fchooser.getNewestfiles().add(event.getFile());
+		fchooser.checkUploads();
+	    
+	    fchooser.getAllfiles().add(event.getFile());
+	    	
+	    	
+	    	
 	    	fchooser.FileSave();
 	    	
 	    	getStoredFilesforDraftPointOnly();
+	    	
 			draftPointSave1();
 			setSavedMsg();
 	    	
 	    	
-	    	
-	    	FacesMessage msg = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-	    }
-	    else
-	    {
-	    	FacesMessage msg = new FacesMessage("You can not upload a file with the same name as a file already stored.", fchooser.getFile().getFileName() + " was not saved. Please change the name and try again.");
-	    	FacesContext.getCurrentInstance().addMessage(null, msg);
-	    }
+	    
+	 
 	
 	    RequestContext.getCurrentInstance().execute("jQuery(\"div.fileupload-content tr.ui-state-error\").remove();");
 	   
@@ -1461,7 +1524,7 @@ public void FileSave()
 	//Now add files to it
 	 try
 	   {
-	thefiles = fchooser.getAllFiles();
+	thefiles = fchooser.getNewestfiles();
 	OutputStream out = new FileOutputStream(thedir);
 	for(org.primefaces.model.UploadedFile currfile: thefiles)
 	{
@@ -1553,36 +1616,31 @@ public void handleFileSavePoint1(ActionEvent event) {
 	if(event!=null)
 	{
 	
-		if(fchooser.getAllFiles().isEmpty())
+		if(fchooser.getAllfiles().isEmpty())
 		{
 			FacesMessage msg1 = new FacesMessage("You must upload at least 1 file before you can save this publication.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg1);
 		}
 		else
 		{
-			setSavingMsg();
+			
 			draftPointSave1();
 			setSavedMsg();
 		}
 	}
 }
 
-public void setSavingMsg()
-{
-	FacesMessage msg1 = new FacesMessage("Saving your progress...please wait.", "");
-	FacesContext.getCurrentInstance().addMessage(null, msg1);
-}
 
 public void setSavedMsg()
 {
-	FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access your draft under 'View My Publications'.");
+	FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access this record under 'View My Publications'.");
 	FacesContext.getCurrentInstance().addMessage(null, msg2);
 }
 
 public void handleFileSavePoint2(ActionEvent event) {
 	if(event!=null)
 	{
-		setSavingMsg();
+		
 		draftPointSave2();
 		setSavedMsg();
 	}
@@ -1593,7 +1651,7 @@ public void handleFileSavePoint3(ActionEvent event) {
 	if(event!=null)
 	{
 	
-		if(fchooser.getAllFiles().isEmpty())
+		if(fchooser.getAllfiles().isEmpty())
 		{
 			
 			moveStep(8);
@@ -1601,7 +1659,7 @@ public void handleFileSavePoint3(ActionEvent event) {
 		else
 		{
 				
-			setSavingMsg();
+			
 			getStoredFilesforDraftPointOnly();
 			draftPointSave1();
 			setSavedMsg();

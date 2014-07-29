@@ -10,8 +10,8 @@
 
 	<h:form id="finalcomplete" >  
 
-		<h:outputText style="font-weight: bold; color: red;" value="Your entry is now complete. It is now accessible to other users."/>
-		<br/>
+		<h:outputText style="font-weight: bold; color: red;" value="Your publication record is now accessible to other users."/>
+		<br/><br/>
 			<p:commandButton value="Return to Start a New Entry" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/> <br/><br/>
 	
 		<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt4"/> <br/>

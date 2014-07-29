@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -33,6 +34,7 @@ public class FileUploadController implements Serializable{
 	
 	private UploadedFile file;
     private ArrayList<UploadedFile> allfiles;
+    private ArrayList<UploadedFile> newestfiles;
     private int pmid;
     private static Logger logger = Logger.getLogger(FileUploadController.class.getName());
     private ArrayList<FileStorer> filesondrive;
@@ -43,6 +45,7 @@ public class FileUploadController implements Serializable{
     	allfiles = new ArrayList<UploadedFile> ();
     	filesondrive = new ArrayList<FileStorer> ();
     	pmid = 0;
+    	newestfiles = new ArrayList<UploadedFile> ();
     	
     }
     
@@ -71,24 +74,31 @@ public class FileUploadController implements Serializable{
     	this.pmid = pmid;
     }
     
-    public void setAllFiles(ArrayList<UploadedFile> allfiles)
+    public void setAllfiles(ArrayList<UploadedFile> allfiles)
     {
     	this.allfiles = allfiles;
     }
     
-    public ArrayList<UploadedFile> getAllFiles()
+    public ArrayList<UploadedFile> getAllfiles()
     {
     	return allfiles;
     }
 
+    public void setNewestfiles(ArrayList<UploadedFile> f)
+    {
+    	this.newestfiles = f;
+    }
+    
+    public ArrayList<UploadedFile> getNewestfiles()
+    {
+    	return newestfiles;
+    }
+    
+    
     public void setFile(UploadedFile file) {
         this.file = file;
     }
 
-    public void upload() {
-        FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
     
     public void RetrieveFiles() {
 		 
@@ -116,27 +126,28 @@ public class FileUploadController implements Serializable{
     	
     	
     }
-    public boolean checkUploads()
+    public void checkUploads()
     {
     	
-    	boolean filecheck = false;
+    	 Iterator<UploadedFile> myitr = newestfiles.iterator();
     	
-    	for(FileStorer currfile: filesondrive)
-    	{
-    		if(currfile.getFilename().equals(file.getFileName()))
-    		{
-    			filecheck = true;
-    		}
-    	}
-
-		    	if(filecheck == true)
+    	
+    	 while(myitr.hasNext())
+    	 {
+    		 
+    		 UploadedFile curruploadedfile  =	 myitr.next();
+		    	for(FileStorer currfile: filesondrive)
 		    	{
-		    		return true;
+		    		if(currfile.getFilename().equals(curruploadedfile.getFileName()))
+		    		{
+		    			myitr.remove();
+		    			FacesMessage msg = new FacesMessage("You can not upload a file with the same name as a file already stored.", curruploadedfile.getFileName() + " was not saved. Please change the name and try again.");
+		    	    	FacesContext.getCurrentInstance().addMessage(null, msg);
+		    		}
 		    	}
-		    	else
-		    	{
-		    		return false; 		
-		    	}
+    	 }
+    	 
+		    	
     }
     
     
@@ -161,16 +172,13 @@ public class FileUploadController implements Serializable{
     	
     	 try
     	   {
-    		 thefiles = this.getAllFiles();
-    		 logger.info("The list of files is: ");
-    	    	for(UploadedFile currfile:thefiles)
-    	    	{
-    	    		logger.info(currfile.getFileName());
-    	    	}
-    	 
+    		 thefiles = newestfiles;
+    		 
+    	    
     		 	for(org.primefaces.model.UploadedFile currfile: thefiles)
     		 	{ 
     	
+    		 		String currfilename = currfile.getFileName();
     		 		String fullfilelocation = currlocation + currfile.getFileName();
     		 		File myfile = new File(fullfilelocation);
     		 		OutputStream out = new FileOutputStream(myfile);
@@ -179,6 +187,8 @@ public class FileUploadController implements Serializable{
     		 		org.apache.commons.io.IOUtils.copy(in, out);
 	    
     		 		out.close();
+    		 		FacesMessage msg = new FacesMessage("Successful", currfilename + " has been uploaded successfully.");
+    				FacesContext.getCurrentInstance().addMessage(null, msg);
     		 	}
     	
     	
@@ -193,41 +203,6 @@ public class FileUploadController implements Serializable{
     
 
 
-    public void handleFileUpload(FileUploadEvent event) {
-    	
-    	if(event!=null)
-    	{
-  
-    		this.setFile(event.getFile());
-    	
-    		if(filesondrive.isEmpty())
-    		{
-    			RetrieveFiles();	
-    		}
-    		else
-    		{
-    			filesondrive = new ArrayList<FileStorer> ();
-    			RetrieveFiles();
-    		}
-    	
-    	    if(!checkUploads())
-    	    {
-    	    	this.allfiles.add(event.getFile());
-    	    	FileSave();
-    	    	FacesMessage msg = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
-    			FacesContext.getCurrentInstance().addMessage(null, msg);
-    	    }
-    	    else
-    	    {
-    	    	FacesMessage msg = new FacesMessage("You can not upload a file with the same name as a file already stored.", file.getFileName() + " was not saved. Please change the name and try again.");
-    	    	FacesContext.getCurrentInstance().addMessage(null, msg);
-    	    }
-    	
-    	    RequestContext.getCurrentInstance().execute("jQuery(\"div.fileupload-content tr.ui-state-error\").remove();");
-
-    	}
-    
-    }
     
     public void handleClearErr(ActionEvent event) {
     	if(event!=null)

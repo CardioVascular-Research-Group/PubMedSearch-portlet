@@ -12,8 +12,8 @@
 	<h:form enctype="multipart/form-data" id="uploadingfiles">
 				
 		
-		<h:outputText value="Please upload all files you would like to associate with the publication selected. "/>
-		<h:outputText value="Use the Save Progress button to save your uploads without moving forward. You can access this publication again under View My Publications." /> 
+		<h:outputText value="Please upload all files you would like to associate with this publication. You can access this publication in the future by selecting View My Publications in the top menu. "/>
+		
 		<br/><br/>
 				   					
 		<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt3"/>. <br/>
@@ -37,12 +37,12 @@
 	   			
 	   	<h:outputText value="#{pubMedSearch.uploaderr}" style="color:red"/><br/>
 	   	<h:outputText value="To upload files to this record:" style="font-weight: bold"/><br/>
-	    <h:outputText value="Choose:" style="font-weight: bold"/> <h:outputText value=" Select data files for upload. You may select multiple files by pressing the Ctrl button. If an invalid file type is chosen, you may continue to upload other files by pressing Choose again." /><br/>
-	    <h:outputText value="Upload:" style="font-weight: bold"/>  <h:outputText value=" Upload all selected files simultaneously. You may upload individual files by selected the up arrow icon to the right of the file." /><br/>
-	    <h:outputText value="Cancel:"  style="font-weight: bold"/>  <h:outputText value=" Cancel all uploads in progress after uploading to the site has begun. You may cancel individual files in progress by using the far right most icon next to the file." /><br/>
-	  
-	   	<h:outputText value="Files may not be deleted after they are uploaded." style="font-weight: bold"/><br/>
-	   	<h:outputText value="Acceptable File Types: "  style="font-weight: bold"/><br/>
+	    <h:outputText value="Choose:" style="font-weight: bold"/> <h:outputText value=" Select data files for upload. You may select multiple files by pressing the Ctrl button. If you receive a message about an invalid file type, you may continue to upload additional files by pressing the Choose button again." /><br/>
+	    <h:outputText value="Upload:" style="font-weight: bold"/>  <h:outputText value=" Upload all selected files simultaneously. You may upload individual files by selecting the up arrow icon to the right of the filename in the list." /><br/>
+	    <h:outputText value="Cancel:"  style="font-weight: bold"/>  <h:outputText value=" Cancel all uploads in progress after uploading to the site has begun. You may cancel individual files uploads in progress by selecting the cancel button (circle-slash symbol) to the right of the file name in the list." /><br/>
+	  	<h:outputText style="" value="You may also drag and drop files into the space below to add them to the upload queue."/> <br/>
+	   	<h:outputText value="Files may not be deleted from the CEP Tools repository after they are uploaded." style="font-weight: bold"/><br/>
+	   	<h:outputText value="Acceptable File Types: "  style="font-weight: bold"/>
 	   	<h:outputText value=".doc, .docx, .xls, .xlsx, .pdf, .abf, .xml, .pgf, .pul, .amp, .dat, .txt, .zip, .tar, .jpg, .jpeg, .png, .tiff, .tif, .jif, .jfif, .jp2, .jpx, .j2k, .j2c" /><br/>
 	   
 	   	<p:fileUpload fileUploadListener="#{pubMedSearch.handleFileUpload}" mode="advanced" style="width:100%" dragDropSupport="true" update="messages" multiple="true" fileLimit="5" sizeLimit="2000000" allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar|jpg|jpeg|png|tiff|tif|jif|jfif|jp2|jpx|j2k|j2c)$/" />  
@@ -50,9 +50,11 @@
 	    <br/><br/><br/>
 	    
 	   	<p:growl id="messages" life="10000" showDetail="true" sticky="true"/>  
-	  	<p:commandButton value="Save Progress and Start a New Entry" actionListener="#{pubMedSearch.handleFileSavePoint3}" update="messages"/> <br/><h:outputText value="Click to save your progress and restart the upload process. If no files have been uploaded, the selected publication will not be saved to your account." /><br/><br/>
+	   	<p:commandButton value="Next: Add File Descriptions" action="#{pubMedSearch.moveStep(5)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/><br/>
+	  	<p:commandButton value="Save Progress and Start a New Entry" actionListener="#{pubMedSearch.handleFileSavePoint3}" update="messages"/> <br/>
+	 
+	  	<h:outputText value="If you do not wish to add file descriptions at this time, please click to save your progress. You will return to the main upload page. If no files have been uploaded, a new record will NOT be created for this publication in your account." /><br/><br/>
 		  
-		<p:commandButton value="Next: Add File Descriptions" action="#{pubMedSearch.moveStep(5)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/><br/>
 	 <h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." />
 	</h:form> 
 	
