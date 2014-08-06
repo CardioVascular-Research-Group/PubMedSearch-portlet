@@ -432,8 +432,6 @@ public class PubMedSearch implements Serializable{
 
 	    
 	    private static Logger logger = Logger.getLogger(PubMedSearch.class.getName());  
-	  
-	   
 	    
 	   public PubMedSearch()
 	    {
@@ -574,8 +572,8 @@ public void cleanMutual()
  	 previousfiles = new ArrayList<FileStorer>();
  	 jv=jn=ji=jd=jm=jy=jsp=doi=epday=epmonth=epyear =epubsum = epubsum2 = "";
  	 selecteddownloadfiletype = selecteddownloadfilename = "";
-  	searchchoice = "searchtitle";  
-  	finalsave = false;
+  	 searchchoice = "searchtitle";  
+  	 finalsave = false;
  
 	 confirmed = false;
 	
@@ -754,9 +752,7 @@ public void moveStep(int nextstep)
 	   
 	   }
    
-   
 
-   
    }
 	
 	try{
@@ -804,16 +800,11 @@ public void reconcileDescriptions()
 				}
 
 			}
-			
-			
-			
+
 		}
-		
-		
+
 		
 	}
-	
-	
 	
 	
 }
@@ -973,8 +964,7 @@ public void SearchSolrList(List<Integer> mypmids)
 						{
 							currlist = convertStore(String.valueOf(currobj), currlist);
 						}
-						
-						
+							
 					}
 					
 					results2.add(currlist);
@@ -1067,8 +1057,6 @@ public Publication convertStore(String fileinfo, Publication currlist)
 			currfile.setLocalfilestore(fileloc);
 
 			currlist.getFstorefiles().add(currfile);
-			
-			
 			solrindex++;
 			
 			return currlist;
@@ -1117,30 +1105,30 @@ public boolean checkSubmit()
 	    
 public List<File> getFiles()
 {
-	return files;
+		return files;
 }
 	    
 public void setFiles(List<File> files)
 {
-	this.files = files;
+		this.files = files;
 }
 	    
 public void setFchooservar()
 {
-	    	selectedpubpmid = this.selectedPub.getPmid();
-	    	fchooser.setPmid(selectedpubpmid);
+	    selectedpubpmid = this.selectedPub.getPmid();
+	    fchooser.setPmid(selectedpubpmid);
 	        
 }
 
 	    
 public void setSelectedindex(int si)
 {
-	    	this.selectedindex = si;
+	    this.selectedindex = si;
 }
 	    
 public Publication identifyRecord()
 {
-	    	return publications.get(this.selectedindex);
+	    return publications.get(this.selectedindex);
 }
 	    
 	    
@@ -1156,8 +1144,6 @@ public Publication identifyRecord()
 	    
 public void getStoredFiles()
 {
-	    	
-	    	
 	    	
 	    	String currlocation = PropsUtil.get("data_store2") + this.selectedPub.getPmid() + "/";
 	    	String zipfilelocation = currlocation+ this.selectedPub.getPmid()+".zip";
@@ -1180,37 +1166,28 @@ public void getStoredFiles()
 	    		else
 	    		{
 	    	     currfilestore.setFilesize(currfile.length()/1000);
-	    		}
-	    		
-	    		
+	    		}    		
 	    		
 	    		currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
 	    		currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
-	    
-	    	
-	    		
-	    		
-	    		
+
 	    		allfiles.add(currfilestore);
-	    		
 	    		files.add(currfile);
 	    		filenames.add(currfile.getName());
 	    		
 	    	}
-	    	
-	    	
+	    	 	
 	    	selectedPub.setFiles(files);
 	    	selectedPub.setFilenames(filenames);
-	    	   reconcileDescriptions();
+	    	reconcileDescriptions();
 	    	
 	   	 if(step != 0)
 	   	 {
 	    	try{
  
-	    	zip.setPmid(this.selectedPub.getPmid());	
-	    	zip.Zipfiles(currlocation, zipfilelocation);
+	    		zip.setPmid(this.selectedPub.getPmid());	
+	    		zip.Zipfiles(currlocation, zipfilelocation);
 	    	
-    
 	    	}
 	    	catch (Exception ex)
 	    	{
@@ -1227,17 +1204,12 @@ public void getStoredFiles()
 public void getStoredFilesforDraftPointOnly()
 	    {
 	    	String currlocation = PropsUtil.get("data_store2") + this.selectedPub.getPmid() + "/";
-
-
 	    	File folder = new File(currlocation);
 	    	
 	    	previousfiles.addAll(allfiles);
-	    	
 	    	allfiles = new ArrayList<FileStorer>();
 	    	
-	    
-	    
-	    	
+
 	    	for(File currfile: folder.listFiles())
 	    	{
 	    		
@@ -1255,14 +1227,10 @@ public void getStoredFilesforDraftPointOnly()
 	    		{
 	    	     currfilestore.setFilesize(currfile.length()/1000);
 	    		}
-	    		
-	    		
-	    		
+
 	    		currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
 	    		currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
-	    		
-	    	
-	    		
+
 	    		allfiles.add(currfilestore);
 	    		
 	    		files.add(currfile);
@@ -1270,11 +1238,10 @@ public void getStoredFilesforDraftPointOnly()
 	    		
 	    	}
 	    	
-	    	
 	    	selectedPub.setFiles(files);
 	    	selectedPub.setFilenames(filenames);
 	    	
-	    	   reconcileDescriptions();
+	    	reconcileDescriptions();
 	    }
 	    
 	    
@@ -1287,8 +1254,8 @@ public void sendtoSolr()
 	    
 	    	 setSOLRMetadata();
 	    
-		    	 metadoc.addField("completion", "false");
-		    	 metadoc.addField("draftpoint", "1" );
+		    	metadoc.addField("completion", "false");
+		    	metadoc.addField("draftpoint", "1" );
 
 	    	    server.add(metadoc);
 	    	    server.commit();
@@ -1321,21 +1288,14 @@ public void handleFileUpload(FileUploadEvent event) {
 		fchooser.checkUploads();
 	    
 	    fchooser.getAllfiles().add(event.getFile());
+	    fchooser.FileSave();
 	    	
+	    getStoredFilesforDraftPointOnly();
 	    	
+		draftPointSave1();
+		setSavedMsg();
 	    	
-	    	fchooser.FileSave();
-	    	
-	    	getStoredFilesforDraftPointOnly();
-	    	
-			draftPointSave1();
-			setSavedMsg();
-	    	
-	    	
-	    
-	 
-	
-	    RequestContext.getCurrentInstance().execute("jQuery(\"div.fileupload-content tr.ui-state-error\").remove();");
+		RequestContext.getCurrentInstance().execute("jQuery(\"div.fileupload-content tr.ui-state-error\").remove();");
 	   
        
 	}
@@ -1346,7 +1306,7 @@ public void deleteZipFromRecord()
 	    {
 	    	
 	//making an artificially large number to ensure the index is found
-  Iterator<FileStorer> myitr = allfiles.iterator();
+	Iterator<FileStorer> myitr = allfiles.iterator();
 	 
 	    	while (myitr.hasNext())
 	    	{
@@ -1361,7 +1321,7 @@ public void deleteZipFromRecord()
 	    	
 	    
 	    	
-	    }
+	 }
 
 
 
@@ -1373,13 +1333,10 @@ public int getCounter()
 
 
 
-public void downloadRawFiles(FileStorer currfile){
+public void downloadRawFiles(FileStorer currfile)
+{
 
-
-	
 	selecteddownloadfile = currfile;
-	
-	
     if(selecteddownloadfile != null){
     	 
            downloadInit();
@@ -1399,8 +1356,6 @@ public void downloadInit()
 	
 	//Begin the download process
 }
-
-
 
 
 public void downloadZipOnly()
@@ -1524,20 +1479,18 @@ public void FileSave()
 	//Now add files to it
 	 try
 	   {
-	thefiles = fchooser.getNewestfiles();
-	OutputStream out = new FileOutputStream(thedir);
-	for(org.primefaces.model.UploadedFile currfile: thefiles)
-	{
-	   String fullfilelocation = currlocation + currfile.getFileName();
-	   File myfile = new File(fullfilelocation);
-
-	   InputStream in = currfile.getInputstream();
-	 
-	    out = new FileOutputStream(myfile);
-	    org.apache.commons.io.IOUtils.copy(in, out);
-	     
-	    
-	}
+		 thefiles = fchooser.getNewestfiles();
+		 OutputStream out = new FileOutputStream(thedir);
+		 	for(org.primefaces.model.UploadedFile currfile: thefiles)
+		 		{
+				   String fullfilelocation = currlocation + currfile.getFileName();
+				   File myfile = new File(fullfilelocation);
+			
+				   InputStream in = currfile.getInputstream();
+				 
+				   out = new FileOutputStream(myfile);
+				   org.apache.commons.io.IOUtils.copy(in, out);	    
+		 		}
 	
 	}
 	catch(Exception ex)
@@ -1585,8 +1538,6 @@ public void initialProcess() throws Exception
 	    else if (searcher.equalsIgnoreCase("pmid") )
 	    {
 	       
-	    
-	        
 	         input = input.replaceAll("\\s", "+");
 	        if( input.charAt(input.length()-1) == ((char) '+')   )
 	        {
@@ -1607,9 +1558,7 @@ public void initialProcess() throws Exception
 	        url = base + "esearch.fcgi?db=pubmed&term="+input+"&retmax=200&tool=ceptools";
 	    }
 	    
-
-	   
-	    
+    
 }
 
 public void handleFileSavePoint1(ActionEvent event) {
@@ -1640,7 +1589,6 @@ public void setSavedMsg()
 public void handleFileSavePoint2(ActionEvent event) {
 	if(event!=null)
 	{
-		
 		draftPointSave2();
 		setSavedMsg();
 	}
@@ -1653,13 +1601,11 @@ public void handleFileSavePoint3(ActionEvent event) {
 	
 		if(fchooser.getAllfiles().isEmpty())
 		{
-			
+				
 			moveStep(8);
 		}
 		else
-		{
-				
-			
+		{	
 			getStoredFilesforDraftPointOnly();
 			draftPointSave1();
 			setSavedMsg();
@@ -1673,13 +1619,12 @@ public void handleFileSavePoint3(ActionEvent event) {
 public void handleFileSavePoint4(ActionEvent event) {
 	if(event!=null)
 	{
+		FacesMessage msg1 = new FacesMessage("Saving your progress...please wait.", "");
+		FacesContext.getCurrentInstance().addMessage(null, msg1);
 	
-	FacesMessage msg1 = new FacesMessage("Saving your progress...please wait.", "");
-	FacesContext.getCurrentInstance().addMessage(null, msg1);
-	
-	draftPointSave2();
-	FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access your draft under 'View My Publications'.");
-	FacesContext.getCurrentInstance().addMessage(null, msg2);
+		draftPointSave2();
+		FacesMessage msg2 = new FacesMessage("Your progress is saved."," You may access your draft under 'View My Publications'.");
+		FacesContext.getCurrentInstance().addMessage(null, msg2);
 
 	}
 	moveStep(8);
@@ -1689,15 +1634,12 @@ public void handleFileSavePoint4(ActionEvent event) {
 
 public void setSOLRVariables()
 {
-filesanddata = new ArrayList<String>();
-	
+	filesanddata = new ArrayList<String>();
 	String allstrings = "";
-	
 
 	for(FileStorer currfile: allfiles)
 	{
-		
-		
+
 		String cfilesize = "filesize:" + String.valueOf(currfile.getFilesize());
 		String cfiledescription = ",filedescription:" + currfile.getDescription();
 		String cfilefigure = ",filefigure:" + currfile.getFigure();
@@ -1709,7 +1651,6 @@ filesanddata = new ArrayList<String>();
 		
 		filesanddata.add(allstrings);
 		
-		
 	}
 	
 	 
@@ -1718,7 +1659,7 @@ filesanddata = new ArrayList<String>();
 public void setSOLRMetadata()
 
 { 
-	server = new HttpSolrServer("http://localhost:8983/solr");
+		 server = new HttpSolrServer("http://localhost:8983/solr");
 		 metadoc = new SolrInputDocument();
 	 
 	 	 metadoc.addField("pmid", selectedPub.getPmid());
@@ -1761,10 +1702,9 @@ public void draftPointSave1()
 
 	try
 	{
-		
 		setSOLRMetadata();
-	metadoc.addField("completion", "false");
-    metadoc.addField("draftpoint", "1" ); 
+		metadoc.addField("completion", "false");
+		metadoc.addField("draftpoint", "1" ); 
 	    server.add(metadoc);
 	    server.commit();
 	}
@@ -1785,8 +1725,7 @@ public void draftPointSave2()
 	 
 	try
 	{
-
-	setSOLRMetadata();
+		setSOLRMetadata();
     	metadoc.addField("completion", "false");
     	metadoc.addField("draftpoint", "2" );
     
@@ -1795,7 +1734,7 @@ public void draftPointSave2()
 	}
 	catch(Exception ex)
 	{
-		
+		logger.info(ex);
 	}
 }
 
@@ -1803,9 +1742,7 @@ public void draftPointSave3()
 {
 	
 	setSOLRVariables();
-
 	finalsave = true;
-	
 
 	try
 	{
@@ -1813,9 +1750,8 @@ public void draftPointSave3()
      metadoc.addField("completion", "true");
      metadoc.addField("draftpoint", "2" );
 
-
-	    server.add(metadoc);
-	    server.commit();
+	 server.add(metadoc);
+	 server.commit();
 	}
 	catch(Exception ex)
 	{
@@ -2039,9 +1975,9 @@ public void processUrl() throws Exception
 	  	            	  myabstract = "NO ABSTRACT FOUND.";
 	  	              }    
 
-	  	  publications.add(new Publication(mytitle, myabstract, myyear, myfauthors, mylauthors, myfnames, jv, jn,jy, jm, jd, jsp, ji, epday, epmonth, epyear, doi, epubsum, epubsum2, authorfull, mypmid, counter));
+	  	              publications.add(new Publication(mytitle, myabstract, myyear, myfauthors, mylauthors, myfnames, jv, jn,jy, jm, jd, jsp, ji, epday, epmonth, epyear, doi, epubsum, epubsum2, authorfull, mypmid, counter));
 
-          counter++;
+	  	              counter++;
 	  	        
 	  	          }  
 	  	         

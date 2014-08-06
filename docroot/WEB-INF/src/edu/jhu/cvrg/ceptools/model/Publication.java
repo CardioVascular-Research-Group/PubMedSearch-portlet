@@ -113,8 +113,6 @@ public class Publication implements Serializable{
         {
         	return authorfull;
         }
-        
- 
   
         public int getIndex()
         {
@@ -243,7 +241,7 @@ public class Publication implements Serializable{
       
       public String getJournalissue ()
       {
-    	return journalissue;  
+    	  return journalissue;  
       }
       public String getJournalday ()
       {
@@ -295,7 +293,6 @@ public class Publication implements Serializable{
       {
     	  this.journalday = jd;
       }
-      
       
       public void setJournalstartpg (String jp)
       {
