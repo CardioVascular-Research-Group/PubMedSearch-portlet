@@ -34,6 +34,7 @@ public class Publication implements Serializable{
 	    private String epubsum, epubsum2;
 	    private String doi;
 	    private String authorfull;
+	    private int userid;
 	    private int pmid;
 	    private int index;
 	    private boolean exists;
@@ -62,6 +63,7 @@ public class Publication implements Serializable{
         	
         	index = -1;
         	pmid = 0;
+        	userid = 0;
         	exists = completed = false;
         }
 
@@ -92,6 +94,16 @@ public class Publication implements Serializable{
         	this.authorfull = afull;
         	
         	
+        }
+        
+        public int getUserid ()
+        {
+        	return userid;
+        }
+        
+        public void setUserid(int u)
+        {
+        	userid = u;
         }
         
         public List<FileStorer> getFstorefiles()

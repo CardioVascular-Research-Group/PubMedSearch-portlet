@@ -168,8 +168,6 @@ public class FileUploadController implements Serializable{
     	}
     
     	
-    
-    	
     	 try
     	   {
     		 thefiles = newestfiles;

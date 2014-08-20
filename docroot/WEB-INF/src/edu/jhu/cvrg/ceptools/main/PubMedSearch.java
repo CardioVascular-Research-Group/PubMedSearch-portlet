@@ -65,11 +65,13 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import com.liferay.faces.portal.context.LiferayFacesContext;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.model.User;
 import com.liferay.portal.util.PortalUtil;
 
 import edu.jhu.cvrg.ceptools.controller.FileDownloadController;
@@ -115,6 +117,7 @@ public class PubMedSearch implements Serializable{
     private int solrindex;
     private int recurpmid;
     private String buttonvalue;
+    private String curruserid;
     
     private  String userauthor;  
 	 
@@ -130,6 +133,7 @@ public class PubMedSearch implements Serializable{
     private String selecteddownloadfilename;
     private String userId;
     private List<String> filesanddata;
+    private boolean match;
    
     private String uploaderr;
     private HttpSolrServer server = new HttpSolrServer("http://localhost:8983/solr");
@@ -142,6 +146,7 @@ public class PubMedSearch implements Serializable{
     private List<String> filenames;
     private List<FileStorer> allfiles;
     private List<FileStorer> previousfiles;
+    private List<FileStorer> newrefinedfiles;
     private FileStorer selectedfile;
     private int selectedpubpmid; //specifically for filechooser for storage
     private ZipDirectory zip;
@@ -151,6 +156,28 @@ public class PubMedSearch implements Serializable{
     private String searchchoice;
     private List<Integer> pmidlist;
     private SolrInputDocument metadoc = new SolrInputDocument();
+    
+    
+    
+	    public boolean getMatch()
+	    {
+	    	return match;
+	    }
+	    
+	    public void setMatch(boolean s)
+	    {
+	    	match = s;
+	    }
+	    
+    	public List<FileStorer> getNewrefinedfiles ()
+    	{
+    		return newrefinedfiles;
+    	}
+    
+    	public void setNewrefinedfiles (List<FileStorer> n)
+    	{
+    		newrefinedfiles = n;
+    	}
 	    
 	    public String getSavemsg()
 	    {
@@ -460,17 +487,19 @@ public class PubMedSearch implements Serializable{
 	    	 jv=jn=ji=jd=jm=jy=jsp=authorfull=doi=epday=epmonth=epyear =epubsum = epubsum2 = "";
 	    	 selecteddownloadfiletype = selecteddownloadfilename = "";
 	    	 searchchoice="";
+	    	 
 	    
 	    	 searchchoice = "searchtitle";  
+	    	 newrefinedfiles = new ArrayList<FileStorer> ();
 	    	 pmidlist = new ArrayList<Integer>();
 	    
 	    	 confirmed = false;
 	    	 redostep3 = redostep5 = redostep6= false;
 	    	 redostep3msg =  redostep5msg =  redostep6msg = "";
 	    	 uploaderr = savemsg =  "";
-	    	 userId = Long.toString(LiferayFacesContext.getInstance().getUser().getUserId());
+	    	 curruserid = Long.toString(LiferayFacesContext.getInstance().getUser().getUserId());
 	    	 filesanddata = new ArrayList<String> ();
-	    	 
+	    	 match = false;
 	    }
 	   
 	   public void checkUpload()
@@ -573,13 +602,18 @@ public void cleanMutual()
  	 jv=jn=ji=jd=jm=jy=jsp=doi=epday=epmonth=epyear =epubsum = epubsum2 = "";
  	 selecteddownloadfiletype = selecteddownloadfilename = "";
   	 searchchoice = "searchtitle";  
+  	 newrefinedfiles = new ArrayList<FileStorer> ();
   	 finalsave = false;
- 
+  
 	 confirmed = false;
 	
 	 redostep3 = redostep5 = redostep6= false;
 	 redostep3msg =  redostep5msg =  redostep6msg = "";
 	 uploaderr = "";
+	 match = false;
+	 
+	
+	 curruserid = Long.toString(LiferayFacesContext.getInstance().getUser().getUserId());
 }
 
 
@@ -662,7 +696,11 @@ public void moveStep(int nextstep)
 						 redostep3 = true;
 						
 				}
-			else
+			else if (redostep3 == true && previousstep == 99)
+			{
+				step = 3;
+			}
+			else 
 			{
 				 step = 4;
 			}  
@@ -674,7 +712,14 @@ public void moveStep(int nextstep)
 			
 				if(selectedPub.getExists())
 				{
+					
+					logger.info("The stored pub id is: " + selectedPub.getUserid() + " and the current user id is: " + curruserid);
+					if(curruserid.equals(String.valueOf(selectedPub.getUserid())))
+					{
+						match = true;
+					}
 					step = 99;
+					
 				}
 				else
 				{
@@ -702,13 +747,13 @@ public void moveStep(int nextstep)
 		   else if(!fchooser.getAllfiles().isEmpty())
 			{
 			   
-			  
+			 
 				uploaderr = "";
 		    	redostep5 = true;
 		    	draftPointSave1();
 		    	CleanFileStorage();
 		    	getStoredFiles();
-		    	 deleteZipFromRecord();
+		    	deleteZipFromRecord();
 		
 		    	step = 6;
 			}
@@ -719,6 +764,7 @@ public void moveStep(int nextstep)
 			}
 		   break;
 	   case 6:
+	
 		   validateDesc();
 			
 			if(confirmed==true)
@@ -955,6 +1001,14 @@ public void SearchSolrList(List<Integer> mypmids)
 					currlist.setAbstract(doc.getFieldValue("abstract").toString());
 					currlist.setPmid(Integer.valueOf(doc.getFieldValue("pmid").toString()));
 					currlist.setCompleted(Boolean.valueOf(doc.getFieldValue("completion").toString()));
+					if(doc.getFieldValue("lruid") != null)
+					{
+					currlist.setUserid(Integer.valueOf(doc.getFieldValue("lruid").toString()));
+					}
+					else
+					{
+					currlist.setUserid(0);	
+					}
 					if(doc.getFieldValues("pfileinfo") != null)
 					{
 					
@@ -983,7 +1037,7 @@ public void SearchSolrList(List<Integer> mypmids)
 							 publications.get(currcounter).setExists(true);
 							 publications.get(currcounter).setCompleted(solrmatch.getCompleted()); 
 							 publications.get(currcounter).setFstorefiles(solrmatch.getFstorefiles());
-							 
+							 publications.get(currcounter).setUserid(solrmatch.getUserid()); 
 
 						 }
 						 currcounter++;
@@ -995,9 +1049,8 @@ public void SearchSolrList(List<Integer> mypmids)
 			 }
 			 catch (Exception ex)
 			 {
-				 logger.info(ex);
-				 StringWriter stack = new StringWriter();
-				 ex.printStackTrace(new PrintWriter(stack));
+				 logger.error("Error : ", ex);
+			
 				
 				
 			 }
@@ -1132,14 +1185,15 @@ public Publication identifyRecord()
 }
 	    
 	    
-	    public void CleanFileStorage()
-	    {
+public void CleanFileStorage()
+	{
+	        previousfiles.addAll(allfiles);
 	    	allfiles = new ArrayList<FileStorer> ();
 	    	files = new ArrayList<File> ();
 	    	filenames = new ArrayList<String> ();
 	    	selectedPub.setFiles(files);
 	    	selectedPub.setFilenames(filenames);
-	    }
+	    	}
 	    
 	    
 public void getStoredFiles()
@@ -1147,6 +1201,10 @@ public void getStoredFiles()
 	    	
 	    	String currlocation = PropsUtil.get("data_store2") + this.selectedPub.getPmid() + "/";
 	    	String zipfilelocation = currlocation+ this.selectedPub.getPmid()+".zip";
+	    	
+	  
+	    	
+	  
 
 	    	File folder = new File(currlocation);
 
@@ -1206,7 +1264,7 @@ public void getStoredFilesforDraftPointOnly()
 	    	String currlocation = PropsUtil.get("data_store2") + this.selectedPub.getPmid() + "/";
 	    	File folder = new File(currlocation);
 	    	
-	    	previousfiles.addAll(allfiles);
+	    	
 	    	allfiles = new ArrayList<FileStorer>();
 	    	
 
@@ -1230,11 +1288,14 @@ public void getStoredFilesforDraftPointOnly()
 
 	    		currfilestore.setFiletype(FilenameUtils.getExtension(currfile.getName()));
 	    		currfilestore.setLocalfilestore( absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
-
+	    		
+               if(!currfilestore.getFilename().equals(selectedPub.getPmid()+".zip"))
+               {
 	    		allfiles.add(currfilestore);
 	    		
 	    		files.add(currfile);
 	    		filenames.add(currfile.getName());
+               }
 	    		
 	    	}
 	    	
@@ -1289,9 +1350,9 @@ public void handleFileUpload(FileUploadEvent event) {
 	    
 	    fchooser.getAllfiles().add(event.getFile());
 	    fchooser.FileSave();
-	    	
+	   
 	    getStoredFilesforDraftPointOnly();
-	    	
+	    newrefinedfiles = allfiles;
 		draftPointSave1();
 		setSavedMsg();
 	    	
@@ -1679,7 +1740,7 @@ public void setSOLRMetadata()
     	 metadoc.addField("epubyear", selectedPub.getEpubyear());
     	 metadoc.addField("author_fullname_list", selectedPub.getAuthorfull());
     
-    	 metadoc.addField("lruid", userId);
+    	 metadoc.addField("lruid",  curruserid);
     	 metadoc.addField("ptitle", selectedPub.getTitle() );  
 	   
 	  for(int i=0; i<selectedPub.getFauthors().size(); i++) 

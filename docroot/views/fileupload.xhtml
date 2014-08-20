@@ -38,15 +38,29 @@
 	   	<h:outputText value="#{pubMedSearch.uploaderr}" style="color:red"/><br/>
 	   	<h:outputText value="To upload files to this record:" style="font-weight: bold"/><br/>
 	    <h:outputText value="Choose:" style="font-weight: bold"/> <h:outputText value=" Select data files for upload. You may select multiple files by pressing the Ctrl button. If you receive a message about an invalid file type, you may continue to upload additional files by pressing the Choose button again." /><br/>
-	    <h:outputText value="Upload:" style="font-weight: bold"/>  <h:outputText value=" Upload all selected files simultaneously. You may upload individual files by selecting the up arrow icon to the right of the filename in the list." /><br/>
+	    <h:outputText value="Upload:" style="font-weight: bold"/>  <h:outputText value=" Upload all selected files simultaneously. You may upload individual files by selecting the up arrow icon to the right of the filename in the list. Once upload is complete, each file will appear under the Uploaded Files box below." /><br/>
 	    <h:outputText value="Cancel:"  style="font-weight: bold"/>  <h:outputText value=" Cancel all uploads in progress after uploading to the site has begun. You may cancel individual files uploads in progress by selecting the cancel button (circle-slash symbol) to the right of the file name in the list." /><br/>
 	  	<h:outputText style="" value="You may also drag and drop files into the space below to add them to the upload queue."/> <br/>
 	   	<h:outputText value="Files may not be deleted from the CEP Tools repository after they are uploaded." style="font-weight: bold"/><br/>
 	   	<h:outputText value="Acceptable File Types: "  style="font-weight: bold"/>
 	   	<h:outputText value=".doc, .docx, .xls, .xlsx, .pdf, .abf, .xml, .pgf, .pul, .amp, .dat, .txt, .zip, .tar, .jpg, .jpeg, .png, .tiff, .tif, .jif, .jfif, .jp2, .jpx, .j2k, .j2c" /><br/>
 	   
-	   	<p:fileUpload fileUploadListener="#{pubMedSearch.handleFileUpload}" mode="advanced" style="width:100%" dragDropSupport="true" update="messages" multiple="true" fileLimit="5" sizeLimit="2000000" allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar|jpg|jpeg|png|tiff|tif|jif|jfif|jp2|jpx|j2k|j2c)$/" />  
-
+	   	<p:fileUpload fileUploadListener="#{pubMedSearch.handleFileUpload}" mode="advanced" style="width:100%" dragDropSupport="true" update="messages,:uploadingfiles:newf" multiple="true" fileLimit="5" sizeLimit="2000000" allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar|jpg|jpeg|png|tiff|tif|jif|jfif|jp2|jpx|j2k|j2c)$/" />  
+<br/>
+	<p:dataTable id="newf" var="nfiles" rowKey="#{nfiles.index}" value="#{pubMedSearch.newrefinedfiles}" emptyMessage="No Files Uploaded" type="ordered" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
+	    	
+	    			<f:facet name="header">Uploaded Files</f:facet>
+	    	
+	                 <p:column headerText="File Name" > 
+					 #{nfiles.filename}
+					  </p:column>  
+					  
+					 <p:column headerText="File Size" > 
+					 #{nfiles.filesize} KB
+					 </p:column> 
+					   
+			</p:dataTable>
+			
 	    <br/><br/><br/>
 	    
 	   	<p:growl id="messages" life="10000" showDetail="true" sticky="true"/>  

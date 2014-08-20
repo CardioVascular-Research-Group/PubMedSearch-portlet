@@ -17,7 +17,7 @@ import javax.faces.bean.ViewScoped;
 
 
 
-@ManagedBean(name="zipDirectory")
+@ManagedBean(name="zipDirectory") 
 @ViewScoped
 
 public class ZipDirectory implements Serializable{

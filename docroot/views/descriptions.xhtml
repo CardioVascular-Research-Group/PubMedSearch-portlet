@@ -20,9 +20,11 @@
 			  
 			<p:dataTable  var="mfiles" rowKey="#{mfiles.index}" value="#{pubMedSearch.allfiles}" id="editList" editable="true" editMode="cell" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >  
 			  
+              
 			        <f:facet name="header">  
 			            File Descriptions 
 			        </f:facet>  
+			        
 			  
 			        <p:column headerText="Filename" style="width:10%">  
 			                   #{mfiles.filename} 
@@ -34,7 +36,7 @@
 			                    <h:outputText value="#{mfiles.figure}" />  
 			                </f:facet>  
 			                <f:facet name="input">  
-			                    <p:inputText value="#{mfiles.figure}"  style="width:100%" label="Figure"/>  
+			                    <h:inputText value="#{mfiles.figure}"  style="width:100%" label="Figure"/>  
 			                </f:facet>  
 			            </p:cellEditor>  
 			        </p:column>  
@@ -56,7 +58,7 @@
 			                    <h:outputText value="#{mfiles.description}" />  
 			                </f:facet>  
 			                <f:facet name="input">  
-			                    <p:inputText value="#{mfiles.description}"  style="width:100%" label="Description" required="true" requiredMessage="You must enter a description when there is no figure and no panel"/>  
+			                    <p:inputText value="#{mfiles.description}"  immediate="true" style="width:100%" label="Description" required="true" requiredMessage="You must enter a description when there is no figure and no panel"/>  
 			                </f:facet> 
 			            </p:cellEditor>  
 			        </p:column>  
@@ -64,6 +66,12 @@
 			        <p:column id="descriptionerrors" headerText="Error Messages" style="width:35%; background-color:#BFBFCB">  
 			            <h:outputText value="#{mfiles.message}" style="color: red"/>  
 			        </p:column> 
+			        <p:column>
+			        
+			        <p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint2}" update="messages2"/><h:outputText value="&#160;" /><br/>
+					<h:outputText value="Click to save your progess and store this publication record to your account. You may access this record to add new files and/or modify descriptions in the future by selecting View My Publications in the top menu." /><br/><br/>
+		
+			        </p:column>
 			  
 	
 			</p:dataTable>  
@@ -71,17 +79,13 @@
 			 
 		<p:growl id="messages2" life="10000" showDetail="true" sticky="true"/>		
 		<br/>
-		<p:commandButton value="Save Progress and Set Publication to Visible" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/>
+		<p:commandButton value="Save Progress and Set Publication to Visible" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}" /><br/>
 	    <h:outputText value="Selecting this button will update the record on CEP Tools and make it visible to all users. You may return to this record to add new files and/or modify descriptions in the future by selecting View My Publications in the top menu." style="color:red"/><br/><br/><br/>
-		
-			
-		<p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint2}" update="messages2"/><h:outputText value="&#160;" /><br/>
-		<h:outputText value="Click to save your progess and store this publication record to your account. You may access this record to add new files and/or modify descriptions in the future by selecting View My Publications in the top menu." /><br/><br/>
 		
 		<p:commandButton value="Save Progress and Start a New Entry" actionListener="#{pubMedSearch.handleFileSavePoint4}" update="messages"/> <br/>
 		<h:outputText value="Click to save your progess, store this publication record to your account, and start a new entry. You may access this record to add new files and/or modify descriptions in the future by selecting View My Publications in the top menu." /><br/><br/>
 		
-		<p:commandButton value="Back: Upload More Files" id="movebstep" validateClient="true" action="#{pubMedSearch.moveStep(5)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/>
+		<p:commandButton value="Back: Upload More Files" id="movebstep" validateClient="true" action="#{pubMedSearch.moveStep(5)}" update=":describefileafterupload2:editList" /><br/><br/>
 		
 		
 		<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." />	
