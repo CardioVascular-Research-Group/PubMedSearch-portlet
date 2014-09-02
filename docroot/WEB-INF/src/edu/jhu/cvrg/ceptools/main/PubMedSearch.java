@@ -65,13 +65,13 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.CellEditEvent;
+
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import com.liferay.faces.portal.context.LiferayFacesContext;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.model.User;
+
 import com.liferay.portal.util.PortalUtil;
 
 import edu.jhu.cvrg.ceptools.controller.FileDownloadController;
@@ -131,7 +131,7 @@ public class PubMedSearch implements Serializable{
     private FileStorer selecteddownloadfile;
     private String selecteddownloadfiletype;
     private String selecteddownloadfilename;
-    private String userId;
+
     private List<String> filesanddata;
     private boolean match;
    
@@ -1835,6 +1835,7 @@ public void processUrl() throws Exception
 	         String mytitle, myabstract, myyear, myfullname;
 	         Element journalname, journalyear, journalmonth, journalday, journalvolume, journalissue, journalpagestart, epubday, epubmonth, epubyear, pubdoi;
 	         int mypmid;
+	         
 	         
 	         
 	         List<String> mylauthors = new ArrayList<String>();

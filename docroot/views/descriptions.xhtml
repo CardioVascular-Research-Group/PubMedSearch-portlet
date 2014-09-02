@@ -17,6 +17,7 @@
 	<br/>
 	<h:outputText value="You can access this publication in the future by selecting View My Publications in the top menu." /> 
 	<p:growl id="messages" showDetail="true"/>  
+		<p:growl id="messages2" life="10000" showDetail="true" sticky="true"/>		
 			  
 			<p:dataTable  var="mfiles" rowKey="#{mfiles.index}" value="#{pubMedSearch.allfiles}" id="editList" editable="true" editMode="cell" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >  
 			  
@@ -66,18 +67,18 @@
 			        <p:column id="descriptionerrors" headerText="Error Messages" style="width:35%; background-color:#BFBFCB">  
 			            <h:outputText value="#{mfiles.message}" style="color: red"/>  
 			        </p:column> 
-			        <p:column>
-			        
-			        <p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint2}" update="messages2"/><h:outputText value="&#160;" /><br/>
-					<h:outputText value="Click to save your progess and store this publication record to your account. You may access this record to add new files and/or modify descriptions in the future by selecting View My Publications in the top menu." /><br/><br/>
+			    
+			             <f:facet name="footer">  
+			        <p:commandButton value="Save Progress" actionListener="#{pubMedSearch.handleFileSavePoint2}" update=":describefileafterupload2:messages2"/><h:outputText value="&#160;" /><br/>
+					<h:outputText value="Click to save your progess and store all data entered." />
 		
-			        </p:column>
+			   </f:facet>
 			  
 	
 			</p:dataTable>  
 			  
 			 
-		<p:growl id="messages2" life="10000" showDetail="true" sticky="true"/>		
+	
 		<br/>
 		<p:commandButton value="Save Progress and Set Publication to Visible" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}" /><br/>
 	    <h:outputText value="Selecting this button will update the record on CEP Tools and make it visible to all users. You may return to this record to add new files and/or modify descriptions in the future by selecting View My Publications in the top menu." style="color:red"/><br/><br/><br/>
