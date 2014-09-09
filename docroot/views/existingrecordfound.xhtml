@@ -16,9 +16,9 @@
 			
 		
 			<h:outputText rendered="#{pubMedSearch.selectedPub.completed}" style="color: red" value="This record has already been added to the CEP Tools repository, with downloadable files available. Would you like to view this record?"/> 		
-			<h:outputText rendered="#{!pubMedSearch.selectedPub.completed and !pubMedSearch.match}" style="color: red" value="This record has already been added to the CEP Tools repository, however it remains hidden because the user that created this record has not made it visible. It may be incomplete. This publication will be available for viewing and file download once this user makes it visible to all users. If you are the user who created this record, you may access it by selecting View My Publications in the top menu."/><br/><br/>  								
+			<h:outputText rendered="#{!pubMedSearch.selectedPub.completed and !pubMedSearch.match}" style="color: red" value="This record has already been added to the CEP Tools repository, however it remains hidden because the user that created this record has not made it visible. It may be incomplete. This publication will be available for viewing and file download once this user makes it visible to all users."/><br/><br/>  								
 			<h:outputText rendered="#{!pubMedSearch.selectedPub.completed and pubMedSearch.match}" style="color: red" value="This record has already been added to the CEP Tools repository, however it remains hidden because you have not made it visible. This publication will be available for viewing and file download once you make it visible to all users. You may access it by selecting View My Publications in the top menu."/><br/>
-			<h:outputText rendered="#{!pubMedSearch.selectedPub.completed}" style="color: red" value="Please return to start a new search using the button below."/> <br/> 
+		
 			<br/>
 			<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt3"/>. <br/>
 			<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff3"/>. <br/>
@@ -39,9 +39,9 @@
 		
 		
 			<p:commandButton rendered="#{pubMedSearch.selectedPub.completed}" value="View the Existing Record" action="#{pubMedSearch.moveStep(0)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" /> <br/><br/>
-			<p:commandButton value="Start a New Search for Upload" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" /> <br/><br/>
-			<p:commandButton value="Back: Start a New Search" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/> 
-			
+		  
+			<p:commandButton value="Back: Make a Different Selection" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>   <br/><br/>
+			<p:commandButton value="Start a New Search for Upload" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" /> 
 		
 		</h:form>
 	</h:panelGrid>

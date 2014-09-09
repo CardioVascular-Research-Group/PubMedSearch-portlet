@@ -9,7 +9,7 @@
 
 
 <h:form id="displaycurrrecord" >  
-<p:commandButton value="Return to Start a New Upload" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" /><br/><br/>
+
  
 		<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt4"/> <br/>
 		<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff4"/>. <br/>
@@ -58,7 +58,7 @@
 		<br/>
 		
 		
-		
+		<p:commandButton value="Start a New Search for Upload" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" /><br/><br/>
 
 	</h:form>
 </f:view>

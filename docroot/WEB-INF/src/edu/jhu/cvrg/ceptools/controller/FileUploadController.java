@@ -18,7 +18,6 @@ import javax.faces.event.ActionEvent;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import com.liferay.portal.kernel.util.PropsUtil;

@@ -759,7 +759,7 @@ public void moveStep(int nextstep)
 			}
 			else
 			{
-				uploaderr = "You must upload at least 1 file to proceed.";
+				uploaderr = "You must upload at least one file to proceed.";
 				step = 5;
 			}
 		   break;
@@ -790,7 +790,7 @@ public void moveStep(int nextstep)
 	   case 8:
 		   if(!fchooser.getAllfiles().isEmpty())
 		    {
-		    savemsg = "Your data has been saved to your account. You may return to this record by selecting View My Publications in the top menu.";
+		    savemsg = "Your data has been saved to your account. This record will remain hidden until you choose to make it visible. To do so, you may return to this record by selecting View My Publications in the top menu.";
 		    }
 			cleanMutual();
 			step=1;
@@ -828,18 +828,22 @@ public void reconcileDescriptions()
 				{
 				afiles.setDescription(pfiles.getDescription());
 				}
+				
 				if(pfiles.getFigure().length() > 0)
 				{
 				afiles.setFigure(pfiles.getFigure());
 				}
+				
 				if(pfiles.getFilelocation().length() > 0)
 				{
 				afiles.setFilelocation(pfiles.getFilelocation());
 				}
+				
 				if(pfiles.getPanel().length() > 0)
 				{
 				afiles.setPanel(pfiles.getPanel());
 				}
+				
 				if(pfiles.getFigpandisplay().length() > 0)
 				{
 				afiles.setFigpandisplay(pfiles.getFigpandisplay());
@@ -1187,13 +1191,13 @@ public Publication identifyRecord()
 	    
 public void CleanFileStorage()
 	{
-	        previousfiles.addAll(allfiles);
-	    	allfiles = new ArrayList<FileStorer> ();
-	    	files = new ArrayList<File> ();
-	    	filenames = new ArrayList<String> ();
-	    	selectedPub.setFiles(files);
-	    	selectedPub.setFilenames(filenames);
-	    	}
+        previousfiles.addAll(allfiles);
+    	allfiles = new ArrayList<FileStorer> ();
+    	files = new ArrayList<File> ();
+    	filenames = new ArrayList<String> ();
+    	selectedPub.setFiles(files);
+    	selectedPub.setFilenames(filenames);
+	}
 	    
 	    
 public void getStoredFiles()
@@ -1202,16 +1206,12 @@ public void getStoredFiles()
 	    	String currlocation = PropsUtil.get("data_store2") + this.selectedPub.getPmid() + "/";
 	    	String zipfilelocation = currlocation+ this.selectedPub.getPmid()+".zip";
 	    	
-	  
-	    	
-	  
-
 	    	File folder = new File(currlocation);
 
 	    	for(File currfile: folder.listFiles())
 	    	{
 	    		
-               String absolutePath = currfile.getAbsolutePath();
+                String absolutePath = currfile.getAbsolutePath();
 	    		FileStorer currfilestore = new FileStorer();
 	    		currfilestore.setFilename(currfile.getName());
 	    		currfilestore.setFilelocation(currfile.getPath());
@@ -1221,7 +1221,7 @@ public void getStoredFiles()
 	    		{
 	    		currfilestore.setFilesize(1);
 	    		}
-	    		else
+	   	    	else
 	    		{
 	    	     currfilestore.setFilesize(currfile.length()/1000);
 	    		}    		
@@ -1279,7 +1279,7 @@ public void getStoredFilesforDraftPointOnly()
 	    		
 	    		if(currfile.length()/1000 < 1)
 	    		{
-	    		currfilestore.setFilesize(1);
+	    		 currfilestore.setFilesize(1);
 	    		}
 	    		else
 	    		{
@@ -1323,7 +1323,7 @@ public void sendtoSolr()
 	    	}
 	    	catch(Exception ex)
 	    	{
-	    		
+	    		logger.info(ex);
 	    	}
 	    }
 
@@ -1366,9 +1366,9 @@ public void handleFileUpload(FileUploadEvent event) {
 public void deleteZipFromRecord()
 	    {
 	    	
-	//making an artificially large number to ensure the index is found
-	Iterator<FileStorer> myitr = allfiles.iterator();
-	 
+		//making an artificially large number to ensure the index is found
+		Iterator<FileStorer> myitr = allfiles.iterator();
+	
 	    	while (myitr.hasNext())
 	    	{
 	    		FileStorer currfile = (FileStorer) myitr.next();
@@ -1661,8 +1661,7 @@ public void handleFileSavePoint3(ActionEvent event) {
 	{
 	
 		if(fchooser.getAllfiles().isEmpty())
-		{
-				
+		{	
 			moveStep(8);
 		}
 		else
@@ -1835,9 +1834,7 @@ public void processUrl() throws Exception
 	         String mytitle, myabstract, myyear, myfullname;
 	         Element journalname, journalyear, journalmonth, journalday, journalvolume, journalissue, journalpagestart, epubday, epubmonth, epubyear, pubdoi;
 	         int mypmid;
-	         
-	         
-	         
+	            
 	         List<String> mylauthors = new ArrayList<String>();
 	         List<String> myfauthors = new ArrayList<String>();
 	         List<String> myfnames = new ArrayList<String>();
