@@ -2,70 +2,16 @@
 <classpath>
 	<classpathentry kind="src" path="docroot/WEB-INF/src"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.liferay.ide.eclipse.server.plugin.container/portlet">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/commons-io-2.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/httpclient-4.2.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/httpcore-4.2.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/httpmime-4.2.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/jcl-over-slf4j-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/jul-to-slf4j-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/noggit-0.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/slf4j-api-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/slf4j-log4j12-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/solr-core-4.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/solr-solrj-4.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/wstx-asl-3.2.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/git/PubMedSearch-portlet/zookeeper-3.4.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/commons-io-2.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/httpclient-4.2.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/httpcore-4.2.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/httpmime-4.2.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jaxen-1.1-beta-6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jaxme-api-0.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jboss-el-2.0.0.GA.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jcl-over-slf4j-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jsf-api-2.1.3-b02.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jsf-impl-2.1.3-b02.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jsr173_1.0_api.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/jul-to-slf4j-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/liferay-faces-bridge-api-3.1.0-rc2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/liferay-faces-bridge-impl-3.1.0-rc2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/liferay-faces-portal-3.1.0-rc2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/liferay-faces-util-3.1.0-rc2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/msv-20030807.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/noggit-0.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/portal-compat-client.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/primefaces-3.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/pull-parser-2.1.10.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/relaxngDatatype-20030807.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/slf4j-api-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/slf4j-log4j12-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/wstx-asl-3.2.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/xpp3-1.1.3.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/xsdlib-20030807.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/zookeeper-3.4.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.liferay.ide.eclipse.server.tomcat.runtimeClasspathProvider/Liferay v6.1 CE (Tomcat 7)">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Liferay v6.1 CE (Tomcat 7) JRE">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/solr-4.4.0/contrib/analysis-extras/lucene-libs/lucene-analyzers-icu-4.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/solr-4.4.0/contrib/analysis-extras/lucene-libs/lucene-analyzers-morfologik-4.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/solr-4.4.0/contrib/analysis-extras/lucene-libs/lucene-analyzers-smartcn-4.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sbrow126/Documents/Liferay/utility jars/solr-4.4.0/contrib/analysis-extras/lucene-libs/lucene-analyzers-stempel-4.4.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

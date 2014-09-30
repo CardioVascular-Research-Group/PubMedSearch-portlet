@@ -3,4 +3,9 @@
 
 <project name="PubMedSearch-portlet" basedir="." default="deploy">
 	<import file="../build-common-portlet.xml" />
+
+	<copy todir="docroot/WEB-INF/lib">
+		<fileset dir="/opt/liferay/portlet-opt" includes="*.jar"/>
+	</copy>
+	
 </project>
