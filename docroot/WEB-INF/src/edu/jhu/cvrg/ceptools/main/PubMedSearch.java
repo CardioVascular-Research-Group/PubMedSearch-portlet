@@ -306,10 +306,14 @@ public class PubMedSearch implements Serializable{
         {
         	return userauthor;
         }
-        
+
         public  String getUsertitle()
         {
         	return usertitle;
+        }
+        public  String getCurruserid()
+        {
+        	return curruserid;
         }
         public  String getUserpmid()
         {

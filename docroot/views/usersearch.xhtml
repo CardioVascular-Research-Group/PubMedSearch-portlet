@@ -8,7 +8,7 @@
 >
 
 
-	<h:panelGrid columns="1" columnClasses="label, value" styleClass="grid" >
+	<h:panelGroup columns="1" columnClasses="label, value" styleClass="grid" >
 		<h:form>
 			<h:outputText value="#{pubMedSearch.savemsg}" style="color:red; "/> <br/><br/>
 			<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." style="color:red; font-weight:bold;"/>
@@ -28,6 +28,6 @@
 			<p:commandButton value="Next: View PubMed Search Results and Select a Publication" id="step3next" action="#{pubMedSearch.moveStep(3)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
 			
 		</h:form>
-	</h:panelGrid>
+	</h:panelGroup>
 
 </f:view>
