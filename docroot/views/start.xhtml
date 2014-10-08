@@ -11,11 +11,7 @@
 	<h:head />
 	<h:body >
 	
-<<<<<<< Upstream, based on origin/master
-		<h:panelGroup rendered="#{(pubMedSearch.step == 1) && (pubMedSearch.curruserid ne '10157')}">
-=======
 		<h:panelGroup rendered="#{pubMedSearch.step eq 1 and pubMedSearch.curruserid ne '10157'}">
->>>>>>> 13ef079 Add logic to display of pages
 		  	 	<ui:include src="/views/usersearch.xhtml" />
 		</h:panelGroup>
 		
