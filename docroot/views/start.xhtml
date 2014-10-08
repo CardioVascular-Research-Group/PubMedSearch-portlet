@@ -38,35 +38,6 @@
 		<h:panelGroup rendered="#{pubMedSearch.step == 0}">
 		   		<ui:include src="/views/preexistingrecorddisplay.xhtml" />
 		</h:panelGroup>
-	<h:body >
-	
-		<h:panelGroup rendered="#{pubMedSearch.step eq 1 and pubMedSearch.curruserid ne '10157'}">
-		  	 	<ui:include src="/views/usersearch.xhtml" />
-		</h:panelGroup>
-		
-		<h:panelGroup rendered="#{pubMedSearch.step == 3}">
-		   		<ui:include src="/views/pubmedsearchresults.xhtml" />
-		</h:panelGroup>
-		
-		<h:panelGroup rendered="#{pubMedSearch.step == 4}">
-		   		<ui:include src="/views/confirmation.xhtml" />
-		</h:panelGroup>
-		
-		<h:panelGroup rendered="#{pubMedSearch.step == 5}">
-		   		<ui:include src="/views/fileupload.xhtml" />
-		</h:panelGroup>
-		
-		<h:panelGroup rendered="#{pubMedSearch.step == 6}">
-		  		<ui:include src="/views/descriptions.xhtml" />
-		</h:panelGroup>
-		
-		<h:panelGroup rendered="#{pubMedSearch.step == 7}">
-		 		<ui:include src="/views/completed.xhtml" />
-		</h:panelGroup>
-		
-		<h:panelGroup rendered="#{pubMedSearch.step == 0}">
-		   		<ui:include src="/views/preexistingrecorddisplay.xhtml" />
-		</h:panelGroup>
 	
 		<h:panelGroup rendered="#{pubMedSearch.step == 99}">
 		   		<ui:include src="/views/existingrecordfound.xhtml" />
