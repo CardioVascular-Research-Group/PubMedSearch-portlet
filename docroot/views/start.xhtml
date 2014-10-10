@@ -11,7 +11,7 @@
 	<h:head />
 	<h:body >
 	
-		<h:panelGroup rendered="#{pubMedSearch.step eq 1 and pubMedSearch.curruserid ne '10157'}">
+		<h:panelGroup rendered="#{pubMedSearch.step eq 1}">
 		  	 	<ui:include src="/views/usersearch.xhtml" />
 		</h:panelGroup>
 		
@@ -41,12 +41,6 @@
 	
 		<h:panelGroup rendered="#{pubMedSearch.step == 99}">
 		   		<ui:include src="/views/existingrecordfound.xhtml" />
-		</h:panelGroup>
-		
-		<h:panelGroup rendered="#{pubMedSearch.curruserid eq '10157'}">
-			<div class="signin">
-				Please <a href="/c/portal/login" rel="nofollow">Sign In</a>
-			</div>
 		</h:panelGroup>
 		
 	</h:body>

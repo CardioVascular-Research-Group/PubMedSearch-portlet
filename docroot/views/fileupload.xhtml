@@ -30,11 +30,9 @@
 		<h:outputText style="font-weight: bold" value="Abstract:  "/> 
 		<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma"/> <br/>  
 					
-		<br/>PMID: 
-		<h:outputText value="#{pubMedSearch.selectedPub.pmid}"  id="pmid1"/><br/>
-		
-	   	<br/><h:outputText value="#{pubMedSearch.redostep5msg}" style="color:red"/>  <br/>
-	   			
+		<p>PMID: #{pubMedSearch.selectedPub.pmid}</p>
+		<h:outputText rendered="#{pubMedSearch.redostep5msg ne ''}" value="#{pubMedSearch.redostep5msg}" style="color:red; font-weight:bold;"/>
+
 	   	<h:outputText value="#{pubMedSearch.uploaderr}" style="color:red"/><br/>
 	   	<h:outputText value="To upload files to this record:" style="font-weight: bold"/><br/>
 	    <h:outputText value="Choose:" style="font-weight: bold"/> <h:outputText value=" Select data files for upload. You may select multiple files by pressing the Ctrl button. If you receive a message about an invalid file type, you may continue to upload additional files by pressing the Choose button again." /><br/>
