@@ -45,7 +45,7 @@
 	   	<h:outputText value="Acceptable File Types: "  style="font-weight: bold"/>
 	   	<h:outputText value=".doc, .docx, .xls, .xlsx, .pdf, .abf, .xml, .pgf, .pul, .amp, .dat, .txt, .zip, .tar, .jpg, .jpeg, .png, .tiff, .tif, .jif, .jfif, .jp2, .jpx, .j2k, .j2c" /><br/>
 	   
-	   	<p:fileUpload fileUploadListener="#{pubMedSearch.handleFileUpload}" mode="advanced" style="width:100%;" dragDropSupport="true" update="messages,:uploadingfiles:newf" multiple="true" fileLimit="5" sizeLimit="2000000" allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar|jpg|jpeg|png|tiff|tif|jif|jfif|jp2|jpx|j2k|j2c)$/" />  
+	   	<p:fileUpload fileUploadListener="#{pubMedSearch.handleFileUpload}" mode="advanced" style="width:100%;" dragDropSupport="true" update="messages,:uploadingfiles:newf" multiple="true" fileLimit="20" sizeLimit="2000000" allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar|jpg|jpeg|png|tiff|tif|jif|jfif|jp2|jpx|j2k|j2c)$/" />  
 <br/>
 	<p:dataTable id="newf" var="nfiles" rowKey="#{nfiles.index}" value="#{pubMedSearch.newrefinedfiles}" emptyMessage="No Files Uploaded" type="ordered" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
 	    	
