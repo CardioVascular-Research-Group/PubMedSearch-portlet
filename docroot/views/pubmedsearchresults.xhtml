@@ -12,50 +12,29 @@
 
 	<h:form id="pmsearchresults">
 	
-		<h:outputText value="Please select one of the citations from the list below."/><br/>
-			<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." />
-		<br/><br/>
+		<p>Please select one of the citations from the list below.<br/>Please do NOT use your browser's back button at anytime during the upload process.</p>
 		<h:outputText value="#{pubMedSearch.uploaderr}" style="color:red"/>
-		
-		<p:commandButton value="Back: Start a New Search" action="#{pubMedSearch.moveStep(1)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-		<p:commandButton value="Next: Confirm Selected Publication" id="step4nexttop" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
-	
-		<br/>
-		<h:outputText value="#{pubMedSearch.redostep3msg}" style="color:red" id="m1"/> <br/>
-	
+		<p>
+			<p:commandButton value="Back: Start a New Search" action="#{pubMedSearch.moveStep(1)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+			<p:commandButton style="margin-left:15px;" value="Next: Confirm Selected Publication" id="step4nexttop" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+		</p>
+		<h:outputText value="#{pubMedSearch.redostep3msg}" style="color:red" id="m1"/>
 		<p:dataTable id="firsttable" var="pubs" value="#{pubMedSearch.publications}" selection="#{pubMedSearch.selectedPub}"  rowKey="#{pubs.index}" selectionMode="single"  paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" > 
-	                  
 			<p:column headerText="PubMed Search Results" > 
-				#{pubs.index}	
-				<h:outputText value="&#160;" />		
-				
-				<h:outputText style="font-weight: bold" value="#{pubs.title}"  id="selectedpubconfirmtt2"/> <br/>
-				<h:outputText value="#{pubs.fullnames}"  id="selectedpubconfirmff2"/>. <br/>
-				<h:outputText value="#{pubs.journalname}"  id="selectedpubconfirmjn2"/>.<h:outputText value="&#160;" />
-				<h:outputText value="#{pubs.journalyear}"  id="selectedpubconfirmjy2"/><h:outputText value="&#160;" />
-				<h:outputText value="#{pubs.journalmonth}"  id="selectedpubconfirmjm2"/><h:outputText value="&#160;" />
-				<h:outputText value="#{pubs.journalday}"  id="selectedpubconfirmjd2"/>;<h:outputText value="&#160;" />
-				<h:outputText value="#{pubs.epubsum2}"  id="epubsum8"/><h:outputText value="&#160;" /><br/>
-				<h:outputText value="#{pubs.doi}"  id="selectedpubdoi2"/><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-				<h:outputText value="#{pubs.epubsum}"  id="epubsum2"/><h:outputText value="&#160;" /><br/>
-				
-				<h:outputText value="This record already exists in the CEP Tools repository."  id="exists1" style="color: red" rendered="#{pubs.exists}"/><h:outputText value="&#160;" />
-		 
-	
-				<br/>PMID: 
-				<h:outputText value="#{pubs.pmid}"  id="pmid2"/>
-				
+				#{pubs.index} <strong>#{pubs.title}</strong><br/>
+				#{pubs.fullnames}.<br/>
+				#{pubs.journalname}. #{pubs.journalyear} #{pubs.journalmonth} #{pubs.journalday}; #{pubs.epubsum2}<br/>
+				#{pubs.doi} #{pubs.epubsum}<br/>
+				<h:outputText value="This record already exists in the CEP Tools repository."  id="exists1" style="color: red" rendered="#{pubs.exists}"/><br/>
+		 		PMID: #{pubs.pmid}
 			</p:column>  
-
 		</p:dataTable>  
-
-		<br/>
-	
-		<h:outputText value="#{pubMedSearch.redostep3msg}" style="color:red" id="m2"/> <br/>
-	
-		<p:commandButton value="Back: Start a New Search" action="#{pubMedSearch.moveStep(1)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-		<p:commandButton value="Next: Confirm Selected Publication" id="step4next" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" /><br/><br/>
-	<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." />
+		<br/><h:outputText rendered="#{!empty pubMedSearch.redostep3msg}" value="#{pubMedSearch.redostep3msg}" style="color:red" id="m2"/>
+		<p>
+			<p:commandButton value="Back: Start a New Search" action="#{pubMedSearch.moveStep(1)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+			<p:commandButton style="margin-left:15px;" value="Next: Confirm Selected Publication" id="step4next" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" />
+		</p>
+		<p>Please do NOT use your browser's back button at anytime during the upload process.</p>
 	</h:form>
 
 </f:view>

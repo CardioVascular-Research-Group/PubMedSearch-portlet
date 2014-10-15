@@ -7,26 +7,20 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 >
 
-
 	<h:panelGroup columns="1" columnClasses="label, value" styleClass="grid" >
 		<h:form>
-			<h:outputText value="#{pubMedSearch.savemsg}" style="color:red; "/> <br/><br/>
-			<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." style="color:red; font-weight:bold;"/>
-			<br/><br/><br/>
-			<h:outputText value="The first step in the process of uploading data files to the site is to identify the associated PubMed publication."/> <br/><br/>			
-			<h:outputText value="Enter PubMed search term(s): "/>	
-				<br/>	
-	
-			<h:inputText id="titleinput" value="#{pubMedSearch.usertitle}" style="width:400px" ></h:inputText><br/>
-			
-			<h:messages for="titleinput"/>
-			
-			<h:outputText value="#{pubMedSearch.redostep1}" style="color:red"/>
-			<a href="http://www.nlm.nih.gov/bsd/disted/pubmedtutorial/020_010.html" target="_blank" >How to search PubMed for citations</a>
-			<br/><br/>
-			 
-			<p:commandButton value="Next: View PubMed Search Results and Select a Publication" id="step3next" action="#{pubMedSearch.moveStep(3)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
-			
+			<h:outputText rendered="#{!empty pubMedSearch.savemsg}" value="#{pubMedSearch.savemsg}" style="color:red; "/>
+			<p><span style="color:red; font-weight:bold;">Please do NOT use your browser's back button at anytime during the upload process.</span></p>
+			<p>The first step in the process of uploading data files to the site is to identify the associated PubMed publication.</p>			
+			<p>Enter PubMed search term(s):<br/>	
+				<h:inputText id="titleinput" value="#{pubMedSearch.usertitle}" style="width:400px" ></h:inputText><br/>
+				<h:messages for="titleinput"/>
+				<h:outputText value="#{pubMedSearch.redostep1}" style="color:red"/>
+				<a href="http://www.nlm.nih.gov/bsd/disted/pubmedtutorial/020_010.html" target="_blank" >How to search PubMed for citations</a>
+			</p>
+			<p>
+				<p:commandButton value="Next: View PubMed Search Results and Select a Publication" id="step3next" action="#{pubMedSearch.moveStep(3)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+			</p>			
 		</h:form>
 	</h:panelGroup>
 

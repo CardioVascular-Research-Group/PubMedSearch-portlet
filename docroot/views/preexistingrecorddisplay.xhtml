@@ -7,11 +7,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 >
 
-
 <h:form id="displaycurrrecord" >  
-
- 
-		<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt4"/> <br/>
+	<p><strong>#{pubMedSearch.selectedPub.title}</strong><br/>
 		<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff4"/>. <br/>
 		<h:outputText value="#{pubMedSearch.selectedPub.journalname}"  id="selectedpubconfirmjn4"/>.<h:outputText value="&#160;" />
 		<h:outputText value="#{pubMedSearch.selectedPub.journalyear}"  id="selectedpubconfirmjy4"/><h:outputText value="&#160;" />
@@ -22,7 +19,7 @@
 		
 		<h:outputText value="#{pubMedSearch.selectedPub.doi}"  id="selectedpubdoi"/><h:outputText value="&#160;" /><h:outputText value="&#160;" />
 		<h:outputText value="#{pubMedSearch.selectedPub.epubsum}"  id="epubsum"/><h:outputText value="&#160;" />
-	 	<br/><br/>
+	 </p>
 	 	
 		<h:outputText style="font-weight: bold" value="Abstract:  "/> 
 		<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma"/> <br/>  
