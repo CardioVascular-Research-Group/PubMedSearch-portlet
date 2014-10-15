@@ -7,9 +7,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 >
 
-
-
-
 	<h:form id="pmsearchresults">
 	
 		<p>Please select one of the citations from the list below.<br/>Please do NOT use your browser's back button at anytime during the upload process.</p>
@@ -21,7 +18,7 @@
 		<h:outputText value="#{pubMedSearch.redostep3msg}" style="color:red" id="m1"/>
 		<p:dataTable id="firsttable" var="pubs" value="#{pubMedSearch.publications}" selection="#{pubMedSearch.selectedPub}"  rowKey="#{pubs.index}" selectionMode="single"  paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" > 
 			<p:column headerText="PubMed Search Results" > 
-				#{pubs.index} <strong>#{pubs.title}</strong><br/>
+				<strong>#{pubs.index}. #{pubs.title}</strong><br/>
 				#{pubs.fullnames}.<br/>
 				#{pubs.journalname}. #{pubs.journalyear} #{pubs.journalmonth} #{pubs.journalday}; #{pubs.epubsum2}<br/>
 				#{pubs.doi} #{pubs.epubsum}<br/>
@@ -36,5 +33,4 @@
 		</p>
 		<p>Please do NOT use your browser's back button at anytime during the upload process.</p>
 	</h:form>
-
 </f:view>

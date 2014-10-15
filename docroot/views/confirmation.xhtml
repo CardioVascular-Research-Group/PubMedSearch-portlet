@@ -7,39 +7,26 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 >
 
-
-
 	<h:panelGrid columns="2" columnClasses="label, value">
 		<h:form id="confirmationcitation">
-		
-			<h:outputText value="Is this the correct citation?" style="font-weight: bold" /> <br/>
-	
-			<h:outputText value="If this is the correct record, please select the Next button below."/> 	<br/><br/>				
-			
-			<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt"/><br/>
-			<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff"/>. <br/>
-			<h:outputText value="#{pubMedSearch.selectedPub.journalname}"  id="selectedpubconfirmjn"/>.<h:outputText value="&#160;" />
-			<h:outputText value="#{pubMedSearch.selectedPub.journalyear}"  id="selectedpubconfirmjy"/><h:outputText value="&#160;" />
-			<h:outputText value="#{pubMedSearch.selectedPub.journalmonth}"  id="selectedpubconfirmjm"/><h:outputText value="&#160;" />
-			<h:outputText value="#{pubMedSearch.selectedPub.journalday}"  id="selectedpubconfirmjd"/>;<h:outputText value="&#160;" />
-			<h:outputText value="#{pubMedSearch.selectedPub.epubsum2}"  id="epubsum4"/><h:outputText value="&#160;" />
-			<br/>
-			<h:outputText value="#{pubMedSearch.selectedPub.doi}"  id="selectedpubdoi"/><h:outputText value="&#160;" />
-			<br/> 
-			<h:outputText value="#{pubMedSearch.selectedPub.epubsum}"  id="epubsum"/><h:outputText value="&#160;" />
-			<br/><br/>
-			<h:outputText style="font-weight: bold" value="Abstract:  "/> 
-			<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma"/> <br/>  
-					
-			<br/>PMID: 
-			<h:outputText value="#{pubMedSearch.selectedPub.pmid}"  id="pmid1"/>
-
-			<br/><br/>
-	
-			<p:commandButton value="Back: Make a Different Selection" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" /> <h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-			<p:commandButton value="Next: Upload Files to this Publication Record" action="#{pubMedSearch.moveStep(5)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/><br/><br/>
-			<p:commandButton value="Start a New Search for Upload" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" /> <br/><br/>
-			<h:outputText value="Please do NOT use your browser's back button at anytime during the upload process." />
+			<p><strong>Is this the correct citation?</strong> If yes, please select the Next button below.</p>
+			<p><strong>#{pubMedSearch.selectedPub.title}</strong><br/>
+				#{pubMedSearch.selectedPub.fullnames}. <br/>
+				#{pubMedSearch.selectedPub.journalname}. #{pubMedSearch.selectedPub.journalyear} #{pubMedSearch.selectedPub.journalmonth} #{pubMedSearch.selectedPub.journalday}; #{pubMedSearch.selectedPub.epubsum2}<br/>
+				#{pubMedSearch.selectedPub.doi} #{pubMedSearch.selectedPub.epubsum}
+			</p>				
+			<p><strong>Abstract:</strong> #{pubMedSearch.selectedPub.abstract}</p>
+			<p>PMID: #{pubMedSearch.selectedPub.pmid}</p>
+			<p>
+				<p:commandButton value="Back: Make a Different Selection" action="#{pubMedSearch.moveStep(3)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);" />
+			</p>
+			<p>
+				<p:commandButton value="Next: Upload Files to this Publication Record" action="#{pubMedSearch.moveStep(5)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+			</p>
+			<p>
+				<p:commandButton value="Start a New Search for Upload" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
+			</p>
+			<p>Please do NOT use your browser's back button at anytime during the upload process.</p>
 		</h:form>
 	</h:panelGrid>
 

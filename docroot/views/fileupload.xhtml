@@ -9,9 +9,11 @@
 	
 	<p>Please upload all files you would like to associate with this publication. You can access this publication in the future by selecting View My Publications in the top menu.</p>
 			   					
-	<p><strong>#{pubMedSearch.selectedPub.title}.</strong><br/>
+	<p><strong>#{pubMedSearch.selectedPub.title}</strong><br/>
 		#{pubMedSearch.selectedPub.fullnames}. #{pubMedSearch.selectedPub.journalname}. #{pubMedSearch.selectedPub.journalyear} #{pubMedSearch.selectedPub.journalmonth} 
-		#{pubMedSearch.selectedPub.journalday}; #{pubMedSearch.selectedPub.epubsum2} #{pubMedSearch.selectedPub.doi} #{pubMedSearch.selectedPub.epubsum}</p>
+		#{pubMedSearch.selectedPub.journalday}; #{pubMedSearch.selectedPub.epubsum2}<br/>
+		#{pubMedSearch.selectedPub.doi} #{pubMedSearch.selectedPub.epubsum}
+	</p>
 	<p><strong>Abstract:</strong> #{pubMedSearch.selectedPub.abstract}</p>  
 	<p>PMID: #{pubMedSearch.selectedPub.pmid}</p>
 	<h:outputText rendered="#{pubMedSearch.redostep5msg ne ''}" value="#{pubMedSearch.redostep5msg}" style="color:red; font-weight:bold;"/>

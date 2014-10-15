@@ -7,60 +7,43 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 >
 
-
 	<h:form id="finalcomplete" >  
+		<p style="font-weight: bold; color: red;">Your publication record is now accessible to other users.</p>
+		<p><strong>#{pubMedSearch.selectedPub.title}</strong><br/>
+			#{pubMedSearch.selectedPub.fullnames}.<br/>
+			#{pubMedSearch.selectedPub.journalname}. #{pubMedSearch.selectedPub.journalyear} #{pubMedSearch.selectedPub.journalmonth} #{pubMedSearch.selectedPub.journalday}; #{pubMedSearch.selectedPub.epubsum2}<br/>
+			#{pubMedSearch.selectedPub.doi} #{pubMedSearch.selectedPub.epubsum} 
+		</p>
+		<p><strong>Abstract:</strong> #{pubMedSearch.selectedPub.abstract}</p>
+		<p>PMID: #{pubMedSearch.selectedPub.pmid}</p>
+		<p>
+			<p:commandButton  id="downloadziponly" value="Click to Download All Files (.zip)" action="#{pubMedSearch.downloadZipOnly()}" ajax="false"/>
+		</p>
+		<p:dataTable id="ft" var="sfiles" rowKey="#{sfiles.index}" value="#{pubMedSearch.allfiles}" type="ordered" selection="#{pubMedSearch.selecteddownloadfile}" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
 
-		<h:outputText style="font-weight: bold; color: red;" value="Your publication record is now accessible to other users."/>
-		<br/><br/>
-		
-	
-		<h:outputText style="font-weight: bold" value="#{pubMedSearch.selectedPub.title}"  id="selectedpubconfirmtt4"/> <br/>
-		<h:outputText value="#{pubMedSearch.selectedPub.fullnames}"  id="selectedpubconfirmff4"/>. <br/>
-		<h:outputText value="#{pubMedSearch.selectedPub.journalname}"  id="selectedpubconfirmjn4"/>.<h:outputText value="&#160;" />
-		<h:outputText value="#{pubMedSearch.selectedPub.journalyear}"  id="selectedpubconfirmjy4"/><h:outputText value="&#160;" />
-		<h:outputText value="#{pubMedSearch.selectedPub.journalmonth}"  id="selectedpubconfirmjm4"/><h:outputText value="&#160;" />
-		<h:outputText value="#{pubMedSearch.selectedPub.journalday}"  id="selectedpubconfirmjd4"/>;<h:outputText value="&#160;" />
-	    <h:outputText value="#{pubMedSearch.selectedPub.epubsum2}"  id="epubsum15"/><h:outputText value="&#160;" />
-		<br/>
-		<h:outputText value="#{pubMedSearch.selectedPub.doi}"  id="selectedpubdoi"/><h:outputText value="&#160;" /><h:outputText value="&#160;" />
-		<h:outputText value="#{pubMedSearch.selectedPub.epubsum}"  id="epubsum"/><h:outputText value="&#160;" />
-	    <br/><br/>
-		<h:outputText style="font-weight: bold" value="Abstract:  "/> 
-		<h:outputText value="#{pubMedSearch.selectedPub.abstract}" id="selectedpubconfirma"/> <br/>  
-					
-		<br/>PMID: <h:outputText value="#{pubMedSearch.selectedPub.pmid}"  id="pmid1"/> <br/><br/>
-	    <p:commandButton  id="downloadziponly" value="Click to Download All Files (.zip)" action="#{pubMedSearch.downloadZipOnly()}" ajax="false"/>
-	 
-	    <br/><br/>
-		
-	        <p:dataTable id="ft" var="sfiles" rowKey="#{sfiles.index}" value="#{pubMedSearch.allfiles}" type="ordered" selection="#{pubMedSearch.selecteddownloadfile}" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
-	
-	                 <p:column headerText="Filename" > 
-					 	#{sfiles.filename}
-					 </p:column>  
-					  
-					 <p:column headerText="File Size">
-					 	#{sfiles.filesize} KB
-					 </p:column>
-					  
-					 <p:column headerText="Figure and Panel">	
-					  	<h:outputText value="#{sfiles.figpandisplay}"/> 
-					 </p:column>
-					  
-					 <p:column headerText="Description">
-					  	#{sfiles.description}
-					 </p:column>
-					  
-					 <p:column headerText="Download" >
-					 	<p:commandButton  id="downloadResults" value="Download this File" action="#{pubMedSearch.downloadRawFiles(sfiles)}" ajax="false"/>
-					 </p:column>
-	 
-	
-				</p:dataTable >
-			<br/>
-	
-		<p:commandButton value="Start a New Search for Upload" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/> <br/>
+        	<p:column headerText="Filename" > 
+			 	#{sfiles.filename}
+			</p:column>  
+			  
+			<p:column headerText="File Size">
+			 	#{sfiles.filesize} KB
+			</p:column>
+			  
+			<p:column headerText="Figure and Panel">	
+			  	<h:outputText value="#{sfiles.figpandisplay}"/> 
+			</p:column>
+			  
+			<p:column headerText="Description">
+			  	#{sfiles.description}
+			</p:column>
+			  
+			<p:column headerText="Download" >
+				<p:commandButton  id="downloadResults" value="Download this File" action="#{pubMedSearch.downloadRawFiles(sfiles)}" ajax="false"/>
+			</p:column>
 
-
+		</p:dataTable >
+		<p style="margin-top:15px;">
+			<p:commandButton value="Start a New Search for Upload" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
+		</p>
 	</h:form>
 </f:view>
