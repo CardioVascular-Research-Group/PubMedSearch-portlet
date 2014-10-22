@@ -33,14 +33,14 @@
 			update="messages,:uploadingfiles:newf" 
 			multiple="true" 
 			allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|abf|xml|pgf|pul|amp|dat|txt|zip|tar|jpg|jpeg|png|tiff|tif|jif|jfif|jp2|jpx|j2k|j2c)$/" />  
-		<p:dataTable id="newf" var="nfiles" rowKey="#{nfiles.index}" value="#{pubMedSearch.newrefinedfiles}" emptyMessage="No Files Uploaded" type="ordered" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
-		    			<f:facet name="header">Uploaded Files</f:facet>
-		                <p:column headerText="File Name" > 
-							#{nfiles.filename}
-						</p:column>  
-						<p:column headerText="File Size" > 
-							#{nfiles.filesize} KB
-						</p:column>    
+		<p:dataTable id="newf" var="nfiles" rowKey="#{nfiles.index}" value="#{pubMedSearch.newrefinedfiles}" emptyMessage="No Files Uploaded" type="ordered" paginator="true" rows="15" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,15,25" >
+		 	<f:facet name="header">Uploaded Files</f:facet>
+		    <p:column headerText="File Name" > 
+				#{nfiles.filename}
+			</p:column>  
+			<p:column headerText="File Size" > 
+				#{nfiles.filesize} KB
+			</p:column>    
 		</p:dataTable>
 		<p style="margin-top:15px;">		 
 		   	<p:commandButton value="Next: Add File Descriptions" action="#{pubMedSearch.moveStep(5)}" update="@form" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
@@ -50,6 +50,6 @@
 		</p>
 		<p>If you do not wish to add file descriptions at this time, please click to save your progress. You will return to the main upload page. If no files have been uploaded, a new record will NOT be created for this publication in your account.</p>
 		<p>Please do NOT use your browser's back button at anytime during the upload process.</p>
-		<p:growl id="messages" life="10000" showDetail="true" sticky="true"/> 
+		<p:growl id="messages" life="10000" showDetail="true"/> 
 	</h:form> 
 </f:view>

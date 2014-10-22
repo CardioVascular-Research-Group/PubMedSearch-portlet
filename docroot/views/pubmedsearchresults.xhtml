@@ -16,7 +16,7 @@
 			<p:commandButton style="margin-left:15px;" value="Next: Confirm Selected Publication" id="step4nexttop" action="#{pubMedSearch.moveStep(4)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>
 		</p>
 		<h:outputText value="#{pubMedSearch.redostep3msg}" style="color:red" id="m1"/>
-		<p:dataTable id="firsttable" var="pubs" value="#{pubMedSearch.publications}" selection="#{pubMedSearch.selectedPub}"  rowKey="#{pubs.index}" selectionMode="single"  paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" > 
+		<p:dataTable id="firsttable" var="pubs" value="#{pubMedSearch.publications}" selection="#{pubMedSearch.selectedPub}"  rowKey="#{pubs.index}" selectionMode="single"  paginator="true" rows="15" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,15,25" > 
 			<p:column headerText="PubMed Search Results" > 
 				<strong>#{pubs.index}. #{pubs.title}</strong><br/>
 				#{pubs.fullnames}.<br/>

@@ -19,28 +19,22 @@
 		<p>
 			<p:commandButton  id="downloadziponly" value="Click to Download All Files (.zip)" action="#{pubMedSearch.downloadZipOnly()}" ajax="false"/>
 		</p>
-		<p:dataTable id="ft" var="sfiles" rowKey="#{sfiles.index}" value="#{pubMedSearch.allfiles}" type="ordered" selection="#{pubMedSearch.selecteddownloadfile}" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >
-
+		<p:dataTable id="ft" var="sfiles" rowKey="#{sfiles.index}" value="#{pubMedSearch.allfiles}" type="ordered" selection="#{pubMedSearch.selecteddownloadfile}" selectionMode="single" paginator="true" rows="15" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,15,25" >
         	<p:column headerText="Filename" > 
 			 	#{sfiles.filename}
-			</p:column>  
-			  
+			</p:column>
 			<p:column headerText="File Size">
 			 	#{sfiles.filesize} KB
 			</p:column>
-			  
 			<p:column headerText="Figure and Panel">	
-			  	<h:outputText value="#{sfiles.figpandisplay}"/> 
+			  	#{sfiles.figpandisplay}
 			</p:column>
-			  
 			<p:column headerText="Description">
 			  	#{sfiles.description}
 			</p:column>
-			  
 			<p:column headerText="Download" >
 				<p:commandButton  id="downloadResults" value="Download this File" action="#{pubMedSearch.downloadRawFiles(sfiles)}" ajax="false"/>
 			</p:column>
-
 		</p:dataTable >
 		<p style="margin-top:15px;">
 			<p:commandButton value="Start a New Search for Upload" id="startover" action="#{pubMedSearch.moveStep(8)}" onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" oncomplete="setTimeout('document.getElementById(\'' + this.id + '\').disabled=false;', 50);"/>

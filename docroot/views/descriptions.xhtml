@@ -17,60 +17,31 @@
 		<li>For files containing data that are referenced in the text or as "data not shown", please use the description field to indicate the page number or section title corresponding to the in-text reference.</li>
 	</ul>
 	<p>You can access this publication in the future by selecting View My Publications in the top menu.</p>
-	<p:growl id="messages" showDetail="true"/>  
-	<p:growl id="messages2" life="10000" showDetail="true" sticky="true"/>		
-	<p:dataTable  var="mfiles" rowKey="#{mfiles.index}" value="#{pubMedSearch.allfiles}" id="editList" editable="true" editMode="cell" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" >  
-           
-        <f:facet name="header">  
-            File Descriptions 
-        </f:facet>  
-  
-        <p:column headerText="Filename" style="width:10%">  
-                   #{mfiles.filename} 
-        </p:column>  
-  
-        <p:column headerText="Figure Number" style="width:10%">  
-            <p:cellEditor>  
-                <f:facet name="output">  
-                    <h:outputText value="#{mfiles.figure}" />  
-                </f:facet>  
-                <f:facet name="input">  
-                    <h:inputText value="#{mfiles.figure}"  style="width:100%" label="Figure"/>  
-                </f:facet>  
-            </p:cellEditor>  
-        </p:column>  
-
-        <p:column headerText="Panel Label" style="width:10%">  
-            <p:cellEditor>  
-                <f:facet name="output">  
-                    <h:outputText value="#{mfiles.panel}" />  
-                </f:facet>  
-                <f:facet name="input">  
-                    <p:inputText value="#{mfiles.panel}"  style="width:100%" label="Panel"/>  
-                </f:facet>  
-            </p:cellEditor>  
-        </p:column>  
-  		  
-        <p:column headerText="Description" style="width:35%">  
-            <p:cellEditor>  
-                  <f:facet name="output">  
-                    <h:outputText value="#{mfiles.description}" />  
-                </f:facet>  
-                <f:facet name="input">  
-                    <p:inputText value="#{mfiles.description}"  immediate="true" style="width:100%" label="Description" required="true" requiredMessage="You must enter a description when there is no figure and no panel"/>  
-                </f:facet> 
-            </p:cellEditor>  
-        </p:column>  
-        
-        <p:column id="descriptionerrors" headerText="Error Messages" style="width:35%; background-color:#BFBFCB">  
-            <h:outputText value="#{mfiles.message}" style="color: red"/>  
-        </p:column> 
-    
-        <f:facet name="footer">  
-	        <p:commandButton value="Save Progress and Store All Data Entered" actionListener="#{pubMedSearch.handleFileSavePoint2}" update=":describefileafterupload2:messages2"/><h:outputText value="&#160;" />
-		</f:facet>
-
-	</p:dataTable>  
+	
+	<p:dataTable  styleClass="pubFileTable" var="mfiles" rowKey="#{mfiles.index}" value="#{pubMedSearch.allfiles}" id="editList" editable="true" editMode="cell" paginator="true" rows="15" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,15,25" >       
+	 		<f:facet name="header">  
+	            File Descriptions
+	        </f:facet>  
+	        <p:column headerText="Filename" styleClass="pubFilenameTd" style="width:18%">  
+	            <h:outputText value="#{mfiles.filename}" />
+	        </p:column>  
+	        <p:column headerText="Figure Number" style="width:8%">   
+	            <p:inputText value="#{mfiles.figure}"  styleClass="pubFileInfoCell" label="Figure"/>  
+	        </p:column> 
+	        <p:column headerText="Panel Number" style="width:8%">  
+	            <p:inputText value="#{mfiles.panel}"  styleClass="pubFileInfoCell" label="Panel"/>  
+	        </p:column>  
+	        <p:column headerText="Description" style="width:41%">  
+	            <p:inputText value="#{mfiles.description}"  styleClass="pubFileInfoCell" label="Description"/>  
+	        </p:column>  
+	        <p:column headerText="Error Messages" styleClass="pubErrorTd" style="width:25%; background-color:#BFBFCB" >  
+	        	<h:outputText value="#{mfiles.message}" style="color: red"/>  
+	        </p:column> 
+  		 	<f:facet name="footer">  
+		        <p:commandButton value="Save Progress and Store All Data Entered" actionListener="#{pubMedSearch.handleFileSavePoint2}" update=":describefileafterupload2:messages"/>
+	      	</f:facet>  
+	    </p:dataTable>  
+	 
 	<p style="margin-top:15px;">
 		<p:commandButton style="font-weight: bold;" value="Save Progress and Set Publication to Visible" id="movetstep" validateClient="true" action="#{pubMedSearch.moveStep(6)}" /><br/>
 		<span style="color:red;">Selecting this button will update the record on CEP Tools and make it visible to all users. You may return to this record to add new files and/or modify descriptions in the future by selecting View My Publications in the top menu.</span>
@@ -83,6 +54,8 @@
 		<p:commandButton value="Back: Upload More Files" id="movebstep" validateClient="true" action="#{pubMedSearch.moveStep(5)}" update=":describefileafterupload2:editList" />
 	</p>	
 	<p>Please do NOT use your browser's back button at any time during the upload process.</p>
+	<p:growl id="messages" life="10000" showDetail="true"/>  
+	<p:growl id="messages2" life="10000" showDetail="true"/>		
 	
 </h:form>
 
